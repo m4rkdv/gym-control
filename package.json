@@ -1,0 +1,17 @@
+{
+  "name": "gymcontrol",
+  "version": "1.0.0",
+  "description": "software for management and control gym's and fit centers",
+  "license": "ISC",
+  "author": "Marcos G Castella Del Valle",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.12",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}
