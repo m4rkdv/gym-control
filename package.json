@@ -4,14 +4,20 @@
   "description": "software for management and control gym's and fit centers",
   "license": "ISC",
   "author": "Marcos G Castella Del Valle",
-  "type": "commonjs",
-  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "domain",
+    "apps/backend"
+  ],
   "scripts": {
-    "test": "test"
+    "start": "npm run start --workspace=apps/backend",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "test:watch": "npm run test:watch --workspaces",
+    "coverage": "npm run coverage --workspaces",
+    "dev": "npm run dev --workspace=apps/backend"
   },
   "devDependencies": {
-    "@types/node": "^24.0.12",
-    "typescript": "^5.8.3",
-    "vitest": "^3.2.4"
+    "typescript": "^5.8.3"
   }
 }

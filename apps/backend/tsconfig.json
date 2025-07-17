@@ -1,0 +1,27 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "composite": true,
+    "noEmit": false,
+    "baseUrl": "./",
+    "paths": {
+      "@gymcontrol/domain": ["../../domain/src/index.ts"],
+      "@gymcontrol/domain/*": ["../../domain/src/*"]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts"
+  ],
+  "references": [
+    {
+      "path": "../../domain"
+    }
+  ]
+}
