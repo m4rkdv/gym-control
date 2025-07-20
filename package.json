@@ -10,12 +10,12 @@
     "apps/backend"
   ],
   "scripts": {
-    "start": "npm run start --workspace=apps/backend",
-    "build": "npm run build --workspaces",
-    "test": "npm run test --workspaces",
-    "test:watch": "npm run test:watch --workspaces",
-    "coverage": "npm run coverage --workspaces",
-    "dev": "npm run dev --workspace=apps/backend"
+    "start": "yarn workspace @gymcontrol/backend start",
+    "build": "yarn workspaces run build",
+    "test": "yarn workspaces run test",
+    "test:watch": "yarn workspaces run test:watch",
+    "coverage": "yarn workspaces run coverage",
+    "dev": "yarn workspace @gymcontrol/backend dev"
   },
   "devDependencies": {
     "typescript": "^5.8.3"
