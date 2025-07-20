@@ -1,11 +1,21 @@
-# Ignorar dependencias
-node_modules/
-
-# Ignorar variables de entorno
-.env
-
 # Archivos de logs
 npm-debug.log
 
 # Archivos del sistema operativo
 .DS_Store
+
+# Vitest
+coverage/
+**/coverage/
+
+# Node.js
+node_modules/
+dist/
+
+# Entornos
+.env
+.env.local
+
+# IDE/Editor
+.vscode/
+.idea/
