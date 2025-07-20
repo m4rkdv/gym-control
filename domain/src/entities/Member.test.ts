@@ -1,11 +1,12 @@
-import { describe, it, expect } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import { Member, CreateMemberDTO, UpdateMemberDTO } from './Member';
 
 describe('Member Entity', () => {
-  it('should have correct Member interface structure', () => {
+  test('should have correct Member interface structure', () => {
     const member: Member = {
       id: '1',
       firstName: 'John',
+      email:'jhon@doe.com',
       lastName: 'Doe',
       weight: 70,
       age: 25,
@@ -20,9 +21,10 @@ describe('Member Entity', () => {
     expect(member.membershipStatus).toMatch(/^(active|inactive|suspended|deleted)$/);
   });
 
-  it('should exclude correct fields in CreateMemberDTO', () => {
+  test('should exclude correct fields in CreateMemberDTO', () => {
     const createMember: CreateMemberDTO = {
       firstName: 'John',
+      email:'jhon@doe.com',
       lastName: 'Doe',
       weight: 70,
       age: 25,
@@ -37,7 +39,7 @@ describe('Member Entity', () => {
     expect(createMember.paidUntil).toBeUndefined();
   });
 
-  it('should allow optional fields in UpdateMemberDTO', () => {
+  test('should allow optional fields in UpdateMemberDTO', () => {
     const updateMember: UpdateMemberDTO = {
       firstName: 'Jane'
     };
