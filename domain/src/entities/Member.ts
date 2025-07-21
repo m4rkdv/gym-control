@@ -2,6 +2,7 @@ export interface Member {
   id: string;
   firstName: string;
   lastName: string;
+  email:string;
   weight: number;
   age: number;
   joinDate: Date;
