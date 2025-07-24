@@ -4,7 +4,7 @@ export interface User {
   email: string;
   hashedPassword: string;
   role: 'member' | 'trainer' | 'admin';
-  memberId?: string; // Solo para usuarios con rol 'member'
+  memberId?: string; // only for role 'member'
   createdAt: Date;
   isActive: boolean;
 }
