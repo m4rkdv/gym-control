@@ -23,8 +23,8 @@ export function mockUserRepository(users: User[] = []): MockedUserRepository {
 
   return {
     users,
-    async findByEmail(email: string): Promise<User | null> {
-      const user = this.users.find(u => u.email === email) ?? null;
+    async findByUserName(userName: string): Promise<User | null> {
+      const user = this.users.find(u => u.userName === userName) ?? null;
       return simulateDatabaseDelay(user);
     },
 
@@ -34,15 +34,15 @@ export function mockUserRepository(users: User[] = []): MockedUserRepository {
     },
 
     async save(user: CreateUserDTO): Promise<User> {
-      const exists = this.users.find(u => u.email === user.email);
+      const exists = this.users.find(u => u.userName === user.userName);
       if (exists) {
         await simulateDatabaseDelay(null);
-        throw new Error("Email already in use");
+        throw new Error("Username already in use");
       }
 
       const newUser: User = {
         ...user,
-        id: crypto.randomUUID?.() ?? Math.random().toString(),
+        id: crypto.randomUUID(),
         createdAt: new Date(),
       };
       

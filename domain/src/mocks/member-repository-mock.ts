@@ -41,7 +41,7 @@ export function mockMemberRepository(members: Member[] = []): MockedMemberReposi
       
       const newMember:Member = {
         ...member,
-        id:crypto.randomUUID?.() ?? Math.random().toString(),
+        id:crypto.randomUUID(),
         membershipStatus: "inactive",
         paidUntil:new Date(0),
       };
