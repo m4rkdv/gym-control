@@ -1,0 +1,1 @@
+export const INITIAL_PAID_UNTIL = new Date(0);
