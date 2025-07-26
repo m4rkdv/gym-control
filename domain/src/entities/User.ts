@@ -1,16 +1,20 @@
-
 export interface User {
   id: string;
-  email: string;
-  hashedPassword: string;
-  role: 'member' | 'trainer' | 'admin';
+  userName: string;  // Members use their email as username
+  password: string;
+  role: userRole;
   memberId?: string; // only for role 'member'
+  trainerId?: string;
   createdAt: Date;
   isActive: boolean;
 }
 
-export type CreateUserDTO = Omit<User, 'id' | 'createdAt'>;
+// repo
+export type CreateUserDTO = Omit<User, 'id' | 'createdAt'>; 
+//login
 export type LoginDTO = {
-  email: string;
+  userName: string;
   password: string;
 };
+
+export type userRole = 'member' | 'trainer' | 'admin';
