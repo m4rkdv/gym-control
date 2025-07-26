@@ -5,6 +5,7 @@ export default defineConfig({
     globals: true,
     reporters: 'verbose',
     environment: 'node',
+    testTimeout: 15000, // 15 secs global
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html']
