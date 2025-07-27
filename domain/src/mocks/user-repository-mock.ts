@@ -3,7 +3,7 @@ import { UserRepository } from "../repositories/user-repository";
 
 const MOCK_DELAY = {
   MIN: 100,   // 0.1 s
-  MAX: 1500    // 1.5 s
+  MAX: 800    // 0.8 s
 };
 
 export interface MockedUserRepository extends UserRepository {
@@ -33,20 +33,34 @@ export function mockUserRepository(users: User[] = []): MockedUserRepository {
       return simulateDatabaseDelay(user);
     },
 
+    async findByTrainerId(trainerId: string): Promise<User | null> {
+      return this.users.find(u => u.trainerId === trainerId) ?? null;
+    },
+
     async save(user: CreateUserDTO): Promise<User> {
-      const exists = this.users.find(u => u.userName === user.userName);
-      if (exists) {
+      const existingUserIndex = users.findIndex(u => u.userName === user.userName);
+      if (existingUserIndex !== -1) {
         await simulateDatabaseDelay(null);
-        throw new Error("Username already in use");
+
+
+        users[existingUserIndex] = {
+          ...users[existingUserIndex],
+          ...user,
+          id: users[existingUserIndex].id,
+          createdAt: users[existingUserIndex].createdAt
+        };
+
+        return users[existingUserIndex];
       }
 
       const newUser: User = {
         ...user,
         id: crypto.randomUUID(),
         createdAt: new Date(),
+        isActive: user.isActive ?? true
       };
-      
-      await simulateDatabaseDelay(null); 
+
+      await simulateDatabaseDelay(null);
       this.users.push(newUser);
       return newUser;
     },

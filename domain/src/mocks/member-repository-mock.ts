@@ -33,10 +33,21 @@ export function mockMemberRepository(members: Member[] = []): MockedMemberReposi
     },
 
     async save(member: CreateMemberDTO): Promise<Member> {
-      const exist = this.members.find(m => m.email === member.email);
-      if (exist) {
+      const existingMemberIndex = this.members.findIndex(m => m.email === member.email);
+
+      if (existingMemberIndex !== -1) {
         await simulateDatabaseDelay(null);
-        throw new Error("Email already in use");
+
+        this.members[existingMemberIndex] = {
+          ...this.members[existingMemberIndex], 
+          ...member,                          
+          id: this.members[existingMemberIndex].id,
+          membershipStatus: this.members[existingMemberIndex].membershipStatus,
+          paidUntil: this.members[existingMemberIndex].paidUntil,
+          joinDate: this.members[existingMemberIndex].joinDate 
+        };
+        
+        return this.members[existingMemberIndex];
       }
 
       const newMember: Member = {
@@ -44,6 +55,7 @@ export function mockMemberRepository(members: Member[] = []): MockedMemberReposi
         id: crypto.randomUUID(),
         membershipStatus: "inactive",
         paidUntil: new Date(0),
+        joinDate: member.joinDate || new Date()
       };
 
       await simulateDatabaseDelay(null);

@@ -43,10 +43,18 @@ export function mockTrainerRepository(trainers: Trainer[] = []): MockedTrainerRe
         },
 
         async save(trainerDTO: CreateTrainerDTO): Promise<Trainer> {
-            const exist = this.trainers.find(t => t.email === trainerDTO.email);
-            if (exist) {
+            const existingTrainerIndex = this.trainers.findIndex(t => t.email === trainerDTO.email);
+            if (existingTrainerIndex !== -1) {
                 await simulateDatabaseDelay(null);
-                throw new Error("Email already in use");
+                this.trainers[existingTrainerIndex] = {
+                    ...this.trainers[existingTrainerIndex],
+                    ...trainerDTO,
+                    id: this.trainers[existingTrainerIndex].id,
+                    hireDate: this.trainers[existingTrainerIndex].hireDate,
+                    isActive: this.trainers[existingTrainerIndex].isActive
+                };
+
+                return this.trainers[existingTrainerIndex];
             }
 
             const newTrainer: Trainer = {
