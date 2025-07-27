@@ -1,11 +1,7 @@
 // src/mocks/trainer-repository-mock.ts
 import { CreateTrainerDTO, Trainer } from "../entities/Trainer";
 import { TrainerRepository } from "../repositories/trainer-repository";
-
-const MOCK_DELAY = {
-    MIN: 100,
-    MAX: 1500,
-};
+import { MOCK_DELAY } from "./MockDelay";
 
 export interface MockedTrainerRepository extends TrainerRepository {
     trainers: Trainer[];

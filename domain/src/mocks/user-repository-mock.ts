@@ -1,10 +1,6 @@
 import { CreateUserDTO, User } from "../entities/User";
 import { UserRepository } from "../repositories/user-repository";
-
-const MOCK_DELAY = {
-  MIN: 100,   // 0.1 s
-  MAX: 800    // 0.8 s
-};
+import { MOCK_DELAY } from "./MockDelay";
 
 export interface MockedUserRepository extends UserRepository {
   users: User[];

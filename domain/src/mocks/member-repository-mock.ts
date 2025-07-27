@@ -1,10 +1,6 @@
 import { CreateMemberDTO, Member } from "../entities/Member";
 import { MemberRepository } from "../repositories/member-repository";
-
-const MOCK_DELAY = {
-  MIN: 100,   // 0.1 s
-  MAX: 1500    // 1.5 s
-};
+import { MOCK_DELAY } from "./MockDelay";
 
 export interface MockedMemberRepository extends MemberRepository {
   members: Member[];
