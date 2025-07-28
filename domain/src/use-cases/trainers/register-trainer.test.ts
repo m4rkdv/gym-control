@@ -1,8 +1,9 @@
 import { describe, test, expect, beforeEach } from 'vitest';
+
+import { CreateTrainerDTO } from '../../entities/Trainer';
+import { MockedTrainerRepository, mockTrainerRepository } from '../../mocks/trainer-repository-mock';
+import { createInvalidDataError } from '../../errors/error';
 import { RegisterTrainer, RegisterTrainerDependencies } from './register-trainer';
-import { CreateTrainerDTO } from '../entities/Trainer';
-import { MockedTrainerRepository, mockTrainerRepository } from '../mocks/trainer-repository-mock';
-import { createInvalidDataError } from '../errors/error';
 
 describe('RegisterTrainer Use Case', () => {
     let repo: MockedTrainerRepository;

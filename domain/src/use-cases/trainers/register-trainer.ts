@@ -1,6 +1,7 @@
-import { CreateTrainerDTO, Trainer } from "../entities/Trainer";
-import { createInvalidDataError, InvalidDataError } from "../errors/error";
-import { TrainerRepository } from "../repositories/trainer-repository";
+
+import { CreateTrainerDTO, Trainer } from "../../entities/Trainer";
+import { createInvalidDataError, InvalidDataError } from "../../errors/error";
+import { TrainerRepository } from "../../repositories/trainer-repository";
 
 export interface RegisterTrainerDependencies {
   trainers: TrainerRepository;

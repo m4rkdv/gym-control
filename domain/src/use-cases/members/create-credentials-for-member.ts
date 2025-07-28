@@ -1,7 +1,7 @@
-import { User, userRole } from "../entities/User";
-import { createInvalidDataError, InvalidDataError } from "../errors/error";
-import { MemberRepository } from "../repositories/member-repository";
-import { UserRepository } from "../repositories/user-repository";
+import { User, userRole } from "../../entities/User";
+import { createInvalidDataError, InvalidDataError } from "../../errors/error";
+import { MemberRepository } from "../../repositories/member-repository";
+import { UserRepository } from "../../repositories/user-repository";
 
 export interface CreateCredentialsForMemberDependencies {
   users: UserRepository;

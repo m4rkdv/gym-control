@@ -1,4 +1,3 @@
-// src/mocks/trainer-repository-mock.ts
 import { CreateTrainerDTO, Trainer } from "../entities/Trainer";
 import { TrainerRepository } from "../repositories/trainer-repository";
 import { MOCK_DELAY } from "./MockDelay";

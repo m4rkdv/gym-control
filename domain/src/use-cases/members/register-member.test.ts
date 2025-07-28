@@ -1,9 +1,9 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { RegisterMember, RegisterMemberDependencies } from './register-member';
-import { CreateMemberDTO, Member } from '../entities/Member';
-import { MockedMemberRepository, mockMemberRepository } from '../mocks/member-repository-mock';
-import { createInvalidDataError } from '../errors/error';
-import { INITIAL_PAID_UNTIL } from '../utils/date';
+import { CreateMemberDTO, Member } from '../../entities/Member';
+import { MockedMemberRepository, mockMemberRepository } from '../../mocks/member-repository-mock';
+import { createInvalidDataError } from '../../errors/error';
+import { INITIAL_PAID_UNTIL } from '../../utils/date';
 
 
 describe('RegisterMember Use Case', () => {

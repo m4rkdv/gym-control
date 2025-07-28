@@ -2,11 +2,11 @@ import { describe, test, expect, beforeEach } from 'vitest';
 import { CreateCredentialsForMember, CreateCredentialsForMemberDependencies } from './create-credentials-for-member';
 import { RegisterMember } from './register-member';
 
-import { MockedMemberRepository, mockMemberRepository } from '../mocks/member-repository-mock';
-import { MockedUserRepository, mockUserRepository } from '../mocks/user-repository-mock';
+import { MockedMemberRepository, mockMemberRepository } from '../../mocks/member-repository-mock';
+import { MockedUserRepository, mockUserRepository } from '../../mocks/user-repository-mock';
 
-import { createInvalidDataError } from '../errors/error';
-import { CreateMemberDTO, Member } from '../entities/Member';
+import { createInvalidDataError } from '../../errors/error';
+import { CreateMemberDTO, Member } from '../../entities/Member';
 
 describe('CreateCredentialsForMember Use Case', () => {
     let memberRepo: MockedMemberRepository;
