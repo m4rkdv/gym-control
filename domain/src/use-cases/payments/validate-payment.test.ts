@@ -120,7 +120,7 @@ describe('ValidatePayment Use Case', () => {
         const validPaymentData: CreatePaymentDTO = {
             ...validDTO,
             paymentMethod: 'cash',
-            paymentDate: new Date('2023-01-15')
+            paymentDate: new Date('2025-01-15')
         };
 
         const validationResult = await ValidatePayment(validPaymentData, memberRepo, paymentRepo);

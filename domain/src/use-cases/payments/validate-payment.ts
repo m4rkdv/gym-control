@@ -3,7 +3,20 @@ import { createInvalidDataError, InvalidDataError } from "../../errors/error";
 import { MemberRepository } from "../../repositories/member-repository";
 import { PaymentRepository } from "../../repositories/payment-repository";
 
-
+/**
+ * Validates a payment request against business rules and member status
+ * 
+ * This case validates whether a payment request is valid according to business rules
+ * including member existence, amount requirements, and duplicate payment checks.
+ * 
+ * @param {CreatePaymentDTO} paymentDTO - The payment data to validate
+ * @param {MemberRepository} members - Repository for member operations
+ * @param {PaymentRepository} payments - Repository for payment operations
+ * @returns {Promise<InvalidDataError | void>} Either throws an InvalidDataError
+ *   if validation fails, or returns void if validation succeeds
+ * 
+ * @throws {InvalidDataError} If any validation rule fails
+ */
 export async function ValidatePayment(
   paymentDTO: CreatePaymentDTO,
   members: MemberRepository,
@@ -16,12 +29,12 @@ export async function ValidatePayment(
 
   const member = await members.findById(paymentDTO.memberId);
   if (!member) return createInvalidDataError("Member not found");
-   const paymentMonth = new Date(
+  const paymentMonth = new Date(
     paymentDTO.paymentDate.getFullYear(),
     paymentDTO.paymentDate.getMonth(),
     1
   );
-  
+
   const existingPayment = await payments.findByMemberIdAndMonth(
     paymentDTO.memberId,
     paymentMonth
