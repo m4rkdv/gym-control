@@ -38,7 +38,6 @@ export function mockMemberRepository(members: Member[] = []): MockedMemberReposi
           ...this.members[existingMemberIndex],
           ...member,
           id: this.members[existingMemberIndex].id,
-          membershipStatus: this.members[existingMemberIndex].membershipStatus,
           joinDate: this.members[existingMemberIndex].joinDate
         };
         
