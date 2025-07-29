@@ -35,12 +35,11 @@ export function mockMemberRepository(members: Member[] = []): MockedMemberReposi
         await simulateDatabaseDelay(null);
 
         this.members[existingMemberIndex] = {
-          ...this.members[existingMemberIndex], 
-          ...member,                          
+          ...this.members[existingMemberIndex],
+          ...member,
           id: this.members[existingMemberIndex].id,
           membershipStatus: this.members[existingMemberIndex].membershipStatus,
-          paidUntil: this.members[existingMemberIndex].paidUntil,
-          joinDate: this.members[existingMemberIndex].joinDate 
+          joinDate: this.members[existingMemberIndex].joinDate
         };
         
         return this.members[existingMemberIndex];
