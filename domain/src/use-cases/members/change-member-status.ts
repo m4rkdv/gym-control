@@ -1,4 +1,3 @@
-// use-cases/change-member-status.ts
 import { Member } from "../../entities/Member";
 import { createInvalidDataError, InvalidDataError } from "../../errors/error";
 import { MemberRepository } from "../../repositories/member-repository";
@@ -9,6 +8,15 @@ export interface ChangeMemberStatusDependencies {
   users: UserRepository;
 }
 
+/**
+ * Request data for changing a member's status.
+ * 
+ * @property {string} memberId - ID of the member whose status is to be changed.
+ * @property {Member["membershipStatus"]} newStatus - The new status to apply to the member.
+ * @property {string} requestedByUserId - ID of the user requesting the status change.
+ * @property {string} [reason] - Optional reason for the status change.
+ * 
+ */
 export type ChangeMemberStatusRequest = {
   memberId: string;
   newStatus: Member["membershipStatus"];
@@ -16,6 +24,16 @@ export type ChangeMemberStatusRequest = {
   reason?: string;
 };
 
+/**
+ * Changes the membership status of a given member.
+ * 
+ * Validates input data, checks authorization, and applies business rules before updating the status.
+ * 
+ * @param {ChangeMemberStatusDependencies} deps - Object containing required repositories.
+ * @param {ChangeMemberStatusRequest} request - Data describing the status change request.
+ * 
+ * @returns {Promise<InvalidDataError | Member>} - Returns the updated Member on success or an InvalidDataError on failure.
+ */
 export async function ChangeMemberStatus(
   { members, users }: ChangeMemberStatusDependencies,
   request: ChangeMemberStatusRequest
@@ -48,6 +66,17 @@ export async function ChangeMemberStatus(
   return members.save(updatedMember);
 }
 
+/**
+ * Validates the transition from the current member status to the new one.
+ * 
+ * Ensures the transition follows business rules based on the user's role and the current state of the member.
+ * 
+ * @param {Member["membershipStatus"]} currentStatus - Current status of the member.
+ * @param {Member["membershipStatus"]} newStatus - Desired new status.
+ * @param {string} userRole - Role of the user performing the status change.
+ * 
+ * @returns {InvalidDataError | void} - Returns an error if the transition is invalid; otherwise, nothing.
+ */
 function validateStatusTransition(
   currentStatus: Member["membershipStatus"], 
   newStatus: Member["membershipStatus"],

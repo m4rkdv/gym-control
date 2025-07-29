@@ -1,4 +1,3 @@
-// use-cases/change-member-status.test.ts
 import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { ChangeMemberStatus, ChangeMemberStatusDependencies, ChangeMemberStatusRequest } from './change-member-status';
 import { MockedMemberRepository, mockMemberRepository } from '../../mocks/member-repository-mock';
