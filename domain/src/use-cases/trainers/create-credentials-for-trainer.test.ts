@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach } from 'vitest';
+import bcrypt from 'bcrypt';
 import { CreateCredentialsForTrainer, CreateCredentialsForTrainerDependencies } from './create-credentials-for-trainer';
-
 import { MockedTrainerRepository, mockTrainerRepository } from '../../mocks/trainer-repository-mock';
 import { MockedUserRepository, mockUserRepository } from '../../mocks/user-repository-mock';
 import { createInvalidDataError } from '../../errors/error';
@@ -65,7 +65,28 @@ describe('CreateCredentialsForTrainer Use Case', () => {
 
         const result = await CreateCredentialsForTrainer(deps, { trainerId: trainer.id, password: 'pass2' });
         expect(result).toEqual(createInvalidDataError('Trainer already has credentials'));
-        console.log("Already Exist Result:",result);
+        console.log("Already Exist Result:", result);
+    });
+
+    test('plainPassword_isHashed_createUser', async () => {
+        const trainer = await seedTrainer({
+            firstName: 'Hash',
+            lastName: 'Test',
+            email: 'hash@test.com',
+            phone: '000',
+        });
+
+        const plainPassword = '12345678';
+        const user = await CreateCredentialsForTrainer(deps, {
+            trainerId: trainer.id,
+            password: plainPassword,
+        });
+
+        if ('message' in user) throw new Error('Unexpected error');
+        expect(user.password).not.toBe(plainPassword);
+
+        const isValid = await bcrypt.compare(plainPassword, user.password);
+        expect(isValid).toBe(true);
     });
 
     test('username_generatedCorrectly_firstTime', async () => {
@@ -78,7 +99,7 @@ describe('CreateCredentialsForTrainer Use Case', () => {
         const user = await CreateCredentialsForTrainer(deps, { trainerId: trainer.id, password: 'pass' });
 
         if ('message' in user) throw new Error('Unexpected error');
-        console.log("Username Generated:",user.userName);
+        console.log("Username Generated:", user.userName);
         expect(user.userName).toBe('coach-arya');
     });
 
@@ -91,7 +112,7 @@ describe('CreateCredentialsForTrainer Use Case', () => {
         });
 
         const trainerUser = await CreateCredentialsForTrainer(deps, { trainerId: existingTrainer.id, password: 'pass' });
-        console.log("Existing trainer user:",trainerUser);
+        console.log("Existing trainer user:", trainerUser);
 
         const trainer = await seedTrainer({
             firstName: 'Jon',
@@ -101,7 +122,7 @@ describe('CreateCredentialsForTrainer Use Case', () => {
         });
 
         const user = await CreateCredentialsForTrainer(deps, { trainerId: trainer.id, password: 'pass' });
-        console.log("New Trainer User 2:",user);
+        console.log("New Trainer User 2:", user);
         if ('message' in user) throw new Error('Unexpected error');
         expect(user.userName).toBe('coach-jon-2');
     });

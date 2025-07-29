@@ -2,6 +2,7 @@ import { User, userRole } from "../../entities/User";
 import { createInvalidDataError, InvalidDataError } from "../../errors/error";
 import { MemberRepository } from "../../repositories/member-repository";
 import { UserRepository } from "../../repositories/user-repository";
+import bcrypt from 'bcrypt';
 
 export interface CreateCredentialsForMemberDependencies {
   users: UserRepository;
@@ -28,11 +29,12 @@ export async function CreateCredentialsForMember(
 
   const alreadyHasUser = await users.findByUserName(userName);
   if (alreadyHasUser) return createInvalidDataError("Member already has credentials");
+  const passwordHash = await bcrypt.hash(credentials.password, 10); // 10 = salt rounds
 
   const user: User = {
     id: crypto.randomUUID(),
     userName: member.email,
-    password: credentials.password, 
+    password: passwordHash, 
     role: "member" as userRole, 
     memberId: member.id, 
     createdAt: new Date(),

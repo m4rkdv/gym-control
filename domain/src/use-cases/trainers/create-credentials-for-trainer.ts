@@ -3,6 +3,8 @@ import { createInvalidDataError, InvalidDataError } from "../../errors/error";
 import { TrainerRepository } from "../../repositories/trainer-repository";
 import { UserRepository } from "../../repositories/user-repository";
 import { generateTrainerUserName } from "../../utils/trainer-username";
+import bcrypt from 'bcrypt';
+
 
 export interface CreateCredentialsForTrainerDependencies {
   users: UserRepository;
@@ -31,11 +33,12 @@ export async function CreateCredentialsForTrainer(
 
   // Trainers use coach-firtName-(count suffix is added to handle duplicates)
   const userName = await generateTrainerUserName(trainer.firstName, users);
-
+  const passwordHash = await bcrypt.hash(credentials.password, 10); // 10 = salt rounds
+  
   const user: User = {
     id: crypto.randomUUID(),
     userName: userName,
-    password: credentials.password, 
+    password: passwordHash, 
     role: "trainer" as userRole, 
     trainerId: trainer.id, 
     createdAt: new Date(),

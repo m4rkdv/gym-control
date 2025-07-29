@@ -7,6 +7,7 @@ import { MockedUserRepository, mockUserRepository } from '../../mocks/user-repos
 
 import { createInvalidDataError } from '../../errors/error';
 import { CreateMemberDTO, Member } from '../../entities/Member';
+import bcrypt from 'bcrypt';
 
 describe('CreateCredentialsForMember Use Case', () => {
     let memberRepo: MockedMemberRepository;
@@ -100,6 +101,31 @@ describe('CreateCredentialsForMember Use Case', () => {
         });
         console.log("start", result);
         expect(result).toEqual(createInvalidDataError('Member already has credentials'));
+    });
+
+    test('plainPassword_isHashed_createUser', async () => {
+        const member = await seedMember({
+            firstName: 'Hash',
+            lastName: 'Member',
+            email: 'hash@member.com',
+            weight: 70,
+            age: 30,
+            joinDate: new Date(),
+        });
+
+        const plainPassword = 'mySecret456';
+
+        const user = await CreateCredentialsForMember(deps, {
+            memberId: member.id,
+            password: plainPassword,
+        });
+
+        if ('message' in user) throw new Error('Unexpected error');
+
+        expect(user.password).not.toBe(plainPassword);
+
+        const isValid = await bcrypt.compare(plainPassword, user.password);
+        expect(isValid).toBe(true);
     });
 
     test('validData_createsCredentials_successfully', async () => {
