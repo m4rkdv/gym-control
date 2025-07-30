@@ -6,10 +6,11 @@ export class AppRoutes {
 
     get routes():Router{
 
-        const router = Router();
-        const auth = new AuthRoutes;
-        router.use('/api/auth', auth.routes)
+        const appRouter = Router();
+        const authRouter = new AuthRoutes;
+        
+        appRouter.use('/api/auth', authRouter.routes)
 
-        return router;
+        return appRouter;
     }
 }
