@@ -16,7 +16,7 @@ export class Server{
     }
 
     async start(){
-        //use define routes
+        //define routes
         this.app.use( this.routes )
 
         this.app.listen(this.port,()=>{
