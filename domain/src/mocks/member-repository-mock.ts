@@ -1,4 +1,4 @@
-import { CreateMemberDTO, Member } from "../entities/Member";
+import { CreateMemberDTO, Member } from '../entities/Member';
 import { MemberRepository } from "../repositories/member-repository";
 import { MOCK_DELAY } from "./MockDelay";
 
@@ -28,7 +28,7 @@ export function mockMemberRepository(members: Member[] = []): MockedMemberReposi
       return simulateDatabaseDelay(member);
     },
 
-    async save(member: CreateMemberDTO): Promise<Member> {
+    async save(member: Omit<Member,'id'>): Promise<Member> {
       const existingMemberIndex = this.members.findIndex(m => m.email === member.email);
 
       if (existingMemberIndex !== -1) {

@@ -12,17 +12,16 @@ export type CreateMemberRequest = CreateMemberDTO;
 
 export async function RegisterMember(
   { members }: RegisterMemberDependencies,
-  memberDTO: CreateMemberRequest
+  newMember: CreateMemberRequest
 ): Promise<InvalidDataError | Member> {
-  const validationError = validateData(memberDTO);
+  const validationError = validateData(newMember);
   if (validationError) return validationError;
 
-  const existing = await members.findByEmail(memberDTO.email);
+  const existing = await members.findByEmail(newMember.email);
   if (existing) return createInvalidDataError("Email already in use");
 
-  const member: Member = {
-    id: crypto.randomUUID(),
-    ...memberDTO,
+  const member: Omit<Member,'id'> = {
+    ...newMember,
     membershipStatus: "inactive",
     paidUntil: INITIAL_PAID_UNTIL,
   };
