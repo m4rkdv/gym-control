@@ -1,11 +1,19 @@
 import mongoose from 'mongoose';
-import { envs } from '../../../config/envs';
+
+interface Options {
+  mongoUrl: string;
+}
 
 export class MongoDatabase {
-  static async connect(): Promise<void> {
+
+  static async connect(options: Options): Promise<void> {
+
+    const { mongoUrl } = options;
     try {
-      await mongoose.connect(envs.MONGO_URL);
+
+      await mongoose.connect(mongoUrl);
       console.log('Connected to MongoDB');
+
     } catch (error) {
       console.error('MongoDB connection error:', error);
       throw error;

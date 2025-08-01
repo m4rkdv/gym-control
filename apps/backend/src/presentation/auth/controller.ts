@@ -63,7 +63,7 @@ export class AuthController {
     }
 
     loginUser = async (req: Request, res: Response) => {
-    // Not implemented 
-    return res.status(201).send();
+        // Not implemented 
+        return res.status(201).send();
     }
 }

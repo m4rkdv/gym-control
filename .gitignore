@@ -1,6 +1,9 @@
 # Archivos de logs
 npm-debug.log
 
+#db
+/mongo/
+
 # Archivos del sistema operativo
 .DS_Store
 
