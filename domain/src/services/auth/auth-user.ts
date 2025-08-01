@@ -3,8 +3,6 @@ import { createInvalidDataError, InvalidDataError } from "../../errors/error";
 import { UserRepository } from "../../repositories/user-repository";
 import bcrypt from 'bcrypt';
 
-
-
 export interface AuthenticateUserDependencies {
   users: UserRepository;
 }
