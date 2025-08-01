@@ -11,15 +11,21 @@ describe("MongoUserRepository", () => {
     let repository: MongoUserRepository;
 
     beforeAll(async () => {
-        mongoServer = await MongoMemoryServer.create();
+        mongoServer = await MongoMemoryServer.create({
+            binary: {
+                version: '6.0.5',
+            },
+        });
         const uri = mongoServer.getUri();
         await mongoose.connect(uri);
         repository = new MongoUserRepository();
-    });
+    },30000);
 
     afterAll(async () => {
         await mongoose.disconnect();
-        await mongoServer.stop();
+        if (mongoServer) {
+            await mongoServer.stop();
+        }
     });
 
     test("save - newUser returns with generated id", async () => {
