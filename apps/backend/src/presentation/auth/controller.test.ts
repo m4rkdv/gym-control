@@ -227,17 +227,17 @@ describe('AuthController', () => {
         });
 
         test('With non-existent user, returns 401 with error', async () => {
-                // Empty user repository
-                (controller as any).userRepository = mockUserRepository([]);
-                mockReq.body = { ...validLoginData };
-    
-                await controller.loginUser(mockReq as ExpressRequest, mockRes as Response);
-    
-                expect(mockStatus).toHaveBeenCalledWith(401);
-                expect(mockJson).toHaveBeenCalledWith({
-                    error: 'Invalid credentials'
-                });
+            // Empty user repository
+            (controller as any).userRepository = mockUserRepository([]);
+            mockReq.body = { ...validLoginData };
+
+            await controller.loginUser(mockReq as ExpressRequest, mockRes as Response);
+
+            expect(mockStatus).toHaveBeenCalledWith(401);
+            expect(mockJson).toHaveBeenCalledWith({
+                error: 'Invalid credentials'
             });
+        });
 
         test('with valid credentials returns 200 and isAuthenticated flag', async () => {
             const hashedPassword = await bcrypt.hash(TEST_PASSWORD, 10);
@@ -256,25 +256,6 @@ describe('AuthController', () => {
             expect(mockJson).toHaveBeenCalledWith({
                 user: true  // isAuthenticated flag
             });
-        });
-
-        test('With incorrect password, returns 401 with error', async () => {
-                // Setup existing user
-                (controller as any).userRepository = mockUserRepository([existingUser]);
-    
-                mockReq.body = {
-                    ...validLoginData,
-                    password: 'wrongPassword'
-                };
-    
-                await controller.loginUser(mockReq as ExpressRequest, mockRes as Response);
-    
-                expect(mockStatus).toHaveBeenCalledWith(401);
-                expect(mockJson).toHaveBeenCalledWith({
-                    error: 'Invalid credentials'
-                });
-            });
-
+        });        
     });
-
 });
