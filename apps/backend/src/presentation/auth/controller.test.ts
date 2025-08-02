@@ -5,6 +5,8 @@ import { mockUserRepository } from '../../../../../domain/src/mocks/user-reposit
 import { mockMemberRepository } from '../../../../../domain/src/mocks/member-repository-mock';
 import { JwtService } from '../services/jwt.service';
 import { Member } from '../../../../../domain/src/entities/Member';
+import { User } from '../../../../../domain/src/entities/User';
+import * as bcrypt from 'bcrypt';
 
 // Mock JwtService
 vi.mock('../services/jwt.service', () => ({
@@ -196,11 +198,21 @@ describe('AuthController', () => {
     describe('loginUser', () => {
         const TEST_PASSWORD = 'ghostPassword';
 
-         const validLoginData = {
+        const validLoginData = {
             userName: 'jon.snow@example.com',
             password: TEST_PASSWORD
         };
-        
+
+        const existingUser: User = {
+            id: 'user-id',
+            userName: 'jon.snow@example.com',
+            password: TEST_PASSWORD,
+            role: 'member',
+            memberId: 'member-id',
+            createdAt: new Date(),
+            isActive: true
+        };
+
         test('With missing credentials, returns 400 with error', async () => {
             const { password, ...invalidData } = validLoginData;
 
@@ -213,7 +225,39 @@ describe('AuthController', () => {
                 error: 'Username and password are required'
             });
         });
-        
+
+        test('With non-existent user, returns 401 with error', async () => {
+                // Empty user repository
+                (controller as any).userRepository = mockUserRepository([]);
+                mockReq.body = { ...validLoginData };
+    
+                await controller.loginUser(mockReq as ExpressRequest, mockRes as Response);
+    
+                expect(mockStatus).toHaveBeenCalledWith(401);
+                expect(mockJson).toHaveBeenCalledWith({
+                    error: 'Invalid credentials'
+                });
+            });
+
+        test('with valid credentials returns 200 and isAuthenticated flag', async () => {
+            const hashedPassword = await bcrypt.hash(TEST_PASSWORD, 10);
+
+            const userToLogin: User = {
+                ...existingUser,
+                password: hashedPassword,
+            };
+
+            (controller as any).userRepository = mockUserRepository([userToLogin]);
+            mockReq.body = { ...validLoginData };
+
+            await controller.loginUser(mockReq as ExpressRequest, mockRes as Response);
+
+            expect(mockStatus).not.toHaveBeenCalled(); // 200 default
+            expect(mockJson).toHaveBeenCalledWith({
+                user: true  // isAuthenticated flag
+            });
+        });
+
     });
 
 });
