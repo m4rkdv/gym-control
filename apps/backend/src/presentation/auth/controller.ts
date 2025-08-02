@@ -63,7 +63,15 @@ export class AuthController {
     }
 
     loginUser = async (req: Request, res: Response) => {
-        // Not implemented 
-        return res.status(201).send();
+        try {
+            const { userName, password } = req.body;
+
+            if (!userName || !password) {
+                return res.status(400).json({ error: 'Username and password are required' });
+            }
+
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
     }
 }
