@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { AuthController } from './controller';
+import express from 'express';
 
 
 export class AuthRoutes {
@@ -9,6 +10,7 @@ export class AuthRoutes {
 
         const router = Router();
         const controller = new AuthController();
+        
         router.post('/login',controller.loginUser)
 
         router.post('/register',controller.registerUser)

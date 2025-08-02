@@ -7,6 +7,7 @@ export interface MockedUserRepository extends UserRepository {
 }
 
 export function mockUserRepository(users: User[] = []): MockedUserRepository {
+  const internalUsers: User[] = JSON.parse(JSON.stringify(users));
   let currentDelay = Math.floor(
     Math.random() * (MOCK_DELAY.MAX - MOCK_DELAY.MIN) + MOCK_DELAY.MIN
   );
@@ -18,10 +19,16 @@ export function mockUserRepository(users: User[] = []): MockedUserRepository {
   };
 
   return {
-    users,
+    users: internalUsers,
     async findByUserName(userName: string): Promise<User | null> {
       const user = this.users.find(u => u.userName === userName) ?? null;
-      return simulateDatabaseDelay(user);
+      if (user) {
+        return simulateDatabaseDelay({
+          ...user,
+          password: user.password 
+        });
+      }
+      return simulateDatabaseDelay(null);
     },
 
     async findById(id: string): Promise<User | null> {
