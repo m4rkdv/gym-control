@@ -58,6 +58,7 @@ describe('AuthController', () => {
 
         // Reset JWT mock
         (JwtService.generateToken as Mock).mockResolvedValue('mock-jwt-token');
+
     });
 
     describe('registerUser', () => {
@@ -164,7 +165,7 @@ describe('AuthController', () => {
             await controller.registerUser(mockReq as ExpressRequest, mockRes as Response);
 
             expect(mockStatus).toHaveBeenCalledWith(201);
-            
+
             const expectedResponse = {
                 user: {
                     userName: 'jon.snow@winter.com',
@@ -190,6 +191,29 @@ describe('AuthController', () => {
                 error: 'Error generating token'
             });
         });
+    });
+
+    describe('loginUser', () => {
+        const TEST_PASSWORD = 'ghostPassword';
+
+         const validLoginData = {
+            userName: 'jon.snow@example.com',
+            password: TEST_PASSWORD
+        };
+        
+        test('With missing credentials, returns 400 with error', async () => {
+            const { password, ...invalidData } = validLoginData;
+
+            mockReq.body = invalidData;
+
+            await controller.loginUser(mockReq as ExpressRequest, mockRes as Response);
+
+            expect(mockStatus).toHaveBeenCalledWith(400);
+            expect(mockJson).toHaveBeenCalledWith({
+                error: 'Username and password are required'
+            });
+        });
+        
     });
 
 });
