@@ -4,6 +4,7 @@ import { MongoUserRepository } from "src/infrastructure/repositories/user.reposi
 import { MongoMemberRepository } from '../../infrastructure/repositories/member.repository.impl';
 import { RegisterMember } from '@gymcontrol/domain/use-cases/members/register-member';
 import { CreateCredentialsForMember } from '@gymcontrol/domain/use-cases/members/create-credentials-for-member';
+import { AuthenticateUser } from '@gymcontrol/domain/services/auth/auth-user';
 
 
 export class AuthController {
@@ -70,6 +71,18 @@ export class AuthController {
                 return res.status(400).json({ error: 'Username and password are required' });
             }
 
+            const authResult = await AuthenticateUser(
+                { users: this.userRepository },
+                { userName, password }
+            );
+
+            if ('message' in authResult) {
+                return res.status(401).json({ error: authResult.message });
+            }
+
+            res.json({
+                user: authResult.isAuthenticated,
+            });
         } catch (error: any) {
             res.status(500).json({ error: error.message });
         }
