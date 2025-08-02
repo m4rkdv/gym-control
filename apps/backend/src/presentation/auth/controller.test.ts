@@ -288,5 +288,23 @@ describe('AuthController', () => {
                 error: 'User account is inactive'
             });
         });
+
+         test('token generation fails, returns 500 with error', async () => {
+            const hashedPassword = await bcrypt.hash(TEST_PASSWORD, 10);
+            const userToLogin: User = {
+                ...existingUser,
+                password: hashedPassword,
+            };
+
+            (controller as any).userRepository = mockUserRepository([userToLogin]);
+            mockReq.body = { ...validLoginData };
+
+            (JwtService.generateToken as Mock).mockResolvedValueOnce(null);
+
+            await controller.loginUser(mockReq as ExpressRequest, mockRes as Response);
+
+            expect(mockStatus).toHaveBeenCalledWith(500);
+            expect(mockJson).toHaveBeenCalledWith({ error: 'Error generating token' });
+        });
     });
 });
