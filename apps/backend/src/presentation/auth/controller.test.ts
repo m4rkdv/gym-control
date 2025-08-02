@@ -256,6 +256,37 @@ describe('AuthController', () => {
             expect(mockJson).toHaveBeenCalledWith({
                 user: true  // isAuthenticated flag
             });
-        });        
+        });
+
+        test('With incorrect password, returns 401 with error', async () => {
+            // Setup existing user
+            (controller as any).userRepository = mockUserRepository([existingUser]);
+
+            mockReq.body = {
+                ...validLoginData,
+                password: 'wrongPassword'
+            };
+
+            await controller.loginUser(mockReq as ExpressRequest, mockRes as Response);
+
+            expect(mockStatus).toHaveBeenCalledWith(401);
+            expect(mockJson).toHaveBeenCalledWith({
+                error: 'Invalid credentials'
+            });
+        });
+
+        test('With inactive user, returns 401 with error', async () => {
+            const inactiveUser = { ...existingUser, isActive: false };
+            (controller as any).userRepository = mockUserRepository([inactiveUser]);
+
+            mockReq.body = { ...validLoginData };
+
+            await controller.loginUser(mockReq as ExpressRequest, mockRes as Response);
+
+            expect(mockStatus).toHaveBeenCalledWith(401);
+            expect(mockJson).toHaveBeenCalledWith({
+                error: 'User account is inactive'
+            });
+        });
     });
 });
