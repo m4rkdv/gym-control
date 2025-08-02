@@ -258,6 +258,23 @@ describe('AuthController', () => {
             });
         });
 
+        test('With incorrect password, returns 401 with error', async () => {
+                // Setup existing user
+                (controller as any).userRepository = mockUserRepository([existingUser]);
+    
+                mockReq.body = {
+                    ...validLoginData,
+                    password: 'wrongPassword'
+                };
+    
+                await controller.loginUser(mockReq as ExpressRequest, mockRes as Response);
+    
+                expect(mockStatus).toHaveBeenCalledWith(401);
+                expect(mockJson).toHaveBeenCalledWith({
+                    error: 'Invalid credentials'
+                });
+            });
+
     });
 
 });
