@@ -1,4 +1,5 @@
 import express, { Router } from 'express';
+import cors from 'cors';
 
 interface Options{
     port?:number;
@@ -9,6 +10,7 @@ export class Server{
     public readonly app = express();
     private readonly port:number;
     private readonly routes: Router;
+
     constructor(options:Options){
         const {port = 3100,routes} = options;
         this.port=port;
@@ -18,6 +20,7 @@ export class Server{
     async start(){
 
         // Middlewares
+        this.app.use(cors());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         

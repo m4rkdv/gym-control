@@ -3,8 +3,6 @@ import { AppRoutes } from "./presentation/routes";
 import { Server } from "./presentation/server";
 import { MongoDatabase } from './infrastructure/database/mongo/connection';
 
-
-
 (() => {
     main();
 })()
@@ -15,6 +13,7 @@ async function main() {
     });
 
     const routes = new AppRoutes();
+    
     new Server({
         port: envs.PORT,
         routes: routes.routes,
