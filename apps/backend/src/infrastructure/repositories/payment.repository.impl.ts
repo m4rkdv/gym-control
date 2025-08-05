@@ -12,11 +12,11 @@ export class MongoPaymentRepository implements PaymentRepository {
     };
   }
 
-  async findByMemberId(memberId: string): Promise < Payment[] > {
-      throw new Error('Method not implemented');
-    }
-
-  async findByMemberIdAndMonth(memberId: string, month: Date): Promise < Payment | null > {
-      throw new Error('Method not implemented');
-    }
+  async findByMemberId(memberId: string): Promise<Payment[]> {
+    return [];
   }
+
+  async findByMemberIdAndMonth(memberId: string, month: Date): Promise<Payment | null> {
+    throw new Error('Method not implemented');
+  }
+}
