@@ -121,4 +121,17 @@ describe('authenticateToken middleware', () => {
         expect(mockJson).toHaveBeenCalledWith({ error: 'Invalid or expired token' });
         expect(mockNext).not.toHaveBeenCalled();
     });
+
+     test('null payload or invalid token returns 403 with error message', async () => {
+        mockReq.headers = {
+            authorization: 'Bearer valid.token'
+        };
+        (JwtService.validateToken as Mock).mockResolvedValue(null);
+
+        await authenticateToken(mockReq as AuthRequest, mockRes as Response, mockNext);
+
+        expect(mockStatus).toHaveBeenCalledWith(403);
+        expect(mockJson).toHaveBeenCalledWith({ error: 'Invalid or expired token' });
+        expect(mockNext).not.toHaveBeenCalled();
+    });
 });
