@@ -25,8 +25,13 @@ export const authenticateToken = async (
             res.status(401).json({ error: 'Access token required' });
             return;
         }
+
         const payload = await JwtService.validateToken<JwtPayload>(token);
 
+        if (!payload?.id || !payload?.userName ) {
+            res.status(403).json({ error: 'Invalid or expired token' });
+            return;
+        }
         req.user = payload!;
         next();
 
