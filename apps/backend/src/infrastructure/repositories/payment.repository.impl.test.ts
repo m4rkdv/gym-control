@@ -42,12 +42,18 @@ describe("MongoPaymentRepository", () => {
 
     test("save payment creates new document with generated ID", async () => {
         const paymentData = createTestPayment(new Types.ObjectId().toString());
-        
+
         const result = await repository.save(paymentData);
-        
+
         expect(result).toHaveProperty('id');
         expect(result.id).toBeTruthy();
         expect(result.amount).toBe(28000.00);
         expect(result.paymentMethod).toBe("mercadopago");
+    });
+
+    test("findByMemberId with no payments returns empty array", async () => {
+        const memberId = new Types.ObjectId().toString();
+        const result = await repository.findByMemberId(memberId);
+        expect(result).toEqual([]);
     });
 });
