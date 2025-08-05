@@ -37,4 +37,21 @@ describe("MongoSystemConfigRepository", () => {
         expect(result.updatedBy).toBe('system');
         expect(result.updatedAt).toBeInstanceOf(Date);
     });
+
+    test("getCurrent returns existing config when available", async () => {
+        const existingConfig = new SystemConfigModel({
+            basePrice: 20000,
+            gracePeriodDays: 15,
+            suspensionMonths: 6,
+            updatedBy: 'admin'
+        });
+        await existingConfig.save();
+
+        const result = await repository.getCurrent();
+
+        expect(result.basePrice).toBe(20000);
+        expect(result.gracePeriodDays).toBe(15);
+        expect(result.suspensionMonths).toBe(6);
+        expect(result.updatedBy).toBe('admin');
+    });
 });
