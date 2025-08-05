@@ -4,14 +4,19 @@ import { PaymentModel } from '../database/mongo/models/payment.model';
 
 export class MongoPaymentRepository implements PaymentRepository {
   async save(payment: Omit<Payment, 'id'>): Promise<Payment> {
-    throw new Error('Method not implemented');
+    const paymentDoc = new PaymentModel(payment);
+    const saved = await paymentDoc.save();
+    return {
+      id: saved._id.toString(),
+      ...payment
+    };
   }
 
-  async findByMemberId(memberId: string): Promise<Payment[]> {
-    throw new Error('Method not implemented');
-  }
+  async findByMemberId(memberId: string): Promise < Payment[] > {
+      throw new Error('Method not implemented');
+    }
 
-  async findByMemberIdAndMonth(memberId: string, month: Date): Promise<Payment | null> {
-    throw new Error('Method not implemented');
+  async findByMemberIdAndMonth(memberId: string, month: Date): Promise < Payment | null > {
+      throw new Error('Method not implemented');
+    }
   }
-}
