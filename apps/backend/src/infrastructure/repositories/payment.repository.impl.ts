@@ -28,6 +28,17 @@ export class MongoPaymentRepository implements PaymentRepository {
   }
 
   async findByMemberIdAndMonth(memberId: string, month: Date): Promise<Payment | null> {
-    throw new Error('Method not implemented');
+    const startOfMonth = new Date(month.getFullYear(), month.getMonth(), 1);
+    const endOfMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0);
+
+    const payment = await PaymentModel.findOne({
+      memberId,
+      paymentDate: { $gte: startOfMonth, $lte: endOfMonth }
+    });
+
+    return payment ? {
+      id: payment._id.toString(),
+      ...payment.toObject()
+    } : null;
   }
 }
