@@ -25,6 +25,10 @@ export const authenticateToken = async (
             res.status(401).json({ error: 'Access token required' });
             return;
         }
+        const payload = await JwtService.validateToken<JwtPayload>(token);
+
+        req.user = payload!;
+        next();
 
     } catch (error) {
         res.status(403).json({ error: 'Token validation failed' });
