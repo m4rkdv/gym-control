@@ -13,7 +13,18 @@ export class MongoPaymentRepository implements PaymentRepository {
   }
 
   async findByMemberId(memberId: string): Promise<Payment[]> {
-    return [];
+    const payments = await PaymentModel.find({ memberId });
+    return payments.map(p => ({
+      id: p._id.toString(),
+      memberId: p.memberId,
+      amount: p.amount,
+      paymentMethod: p.paymentMethod,
+      paymentDate: p.paymentDate,
+      monthsCovered: p.monthsCovered,
+      isProportional: p.isProportional,
+      hasPromotion: p.hasPromotion,
+      promotionId: p.promotionId
+    }));
   }
 
   async findByMemberIdAndMonth(memberId: string, month: Date): Promise<Payment | null> {
