@@ -3,27 +3,31 @@ import { JwtService } from '../services/jwt.service';
 
 
 export interface JwtPayload {
-  id: string;
-  userName: string;
-  role: 'member' | 'trainer' | 'admin';
+    id: string;
+    userName: string;
+    role: 'member' | 'trainer' | 'admin';
 }
 
 export interface AuthRequest extends Request {
-  user?: JwtPayload;
+    user?: JwtPayload;
 }
 
 export const authenticateToken = async (
-  req: AuthRequest,
-  res: Response,
+    req: AuthRequest,
+    res: Response,
+    next: NextFunction
 ): Promise<void> => {
-  try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7).trim() : null;
+    try {
+        const authHeader = req.headers.authorization;
+        const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7).trim() : null;
 
-    const payload = await JwtService.validateToken<JwtPayload>(token!);
-    
-  } catch (error) {
-    res.status(403).json({ error: 'Token validation failed' });
-    
-  }
+        if (!token) {
+            res.status(401).json({ error: 'Access token required' });
+            return;
+        }
+
+    } catch (error) {
+        res.status(403).json({ error: 'Token validation failed' });
+
+    }
 };
