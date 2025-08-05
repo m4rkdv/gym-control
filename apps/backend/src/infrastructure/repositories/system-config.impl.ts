@@ -7,13 +7,12 @@ export class MongoSystemConfigRepository implements SystemConfigRepository {
         let config = await SystemConfigModel.findOne();
 
         if (!config) {
-            config = new SystemConfigModel({
-                basePrice: 15000,
+            config = await SystemConfigModel.create({
+                basePrice: 28000,
                 gracePeriodDays: 10,
                 suspensionMonths: 3,
                 updatedBy: 'system'
             });
-            await config.save();
         }
 
         return {
