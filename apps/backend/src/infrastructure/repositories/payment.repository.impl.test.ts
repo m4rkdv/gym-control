@@ -56,4 +56,16 @@ describe("MongoPaymentRepository", () => {
         const result = await repository.findByMemberId(memberId);
         expect(result).toEqual([]);
     });
+
+    test("findByMemberId returns all payments for specific member", async () => {
+        const memberId1 = new Types.ObjectId().toString();
+        const memberId2 = new Types.ObjectId().toString();
+
+        await repository.save(createTestPayment(memberId1));
+        await repository.save(createTestPayment(memberId1, 2));
+        await repository.save(createTestPayment(memberId2));
+
+        const result = await repository.findByMemberId(memberId1);
+        expect(result).toHaveLength(2);
+    });
 });
