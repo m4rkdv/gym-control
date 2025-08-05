@@ -80,7 +80,7 @@ export class AuthController {
                 return res.status(401).json({ error: authResult.message });
             }
 
-             const token = await JwtService.generateToken({
+            const token = await JwtService.generateToken({
                 id: authResult.user.id,
                 userName: authResult.user.userName,
                 role: authResult.user.role
@@ -91,7 +91,8 @@ export class AuthController {
             }
 
             res.json({
-                user: authResult.isAuthenticated,
+                user: authResult.user,
+                token
             });
         } catch (error: any) {
             res.status(500).json({ error: error.message });
