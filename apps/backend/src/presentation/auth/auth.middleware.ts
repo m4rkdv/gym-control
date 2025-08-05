@@ -28,7 +28,7 @@ export const authenticateToken = async (
 
         const payload = await JwtService.validateToken<JwtPayload>(token);
 
-        if (!payload?.id || !payload?.userName ) {
+        if (!payload?.id || !payload?.userName || !payload?.role) {
             res.status(403).json({ error: 'Invalid or expired token' });
             return;
         }
