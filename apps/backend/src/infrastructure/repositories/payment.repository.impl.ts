@@ -6,9 +6,17 @@ export class MongoPaymentRepository implements PaymentRepository {
   async save(payment: Omit<Payment, 'id'>): Promise<Payment> {
     const paymentDoc = new PaymentModel(payment);
     const saved = await paymentDoc.save();
+
     return {
       id: saved._id.toString(),
-      ...payment
+      memberId: saved.memberId,
+      amount: saved.amount,
+      paymentMethod: saved.paymentMethod,
+      paymentDate: saved.paymentDate,
+      monthsCovered: saved.monthsCovered,
+      isProportional: saved.isProportional,
+      hasPromotion: saved.hasPromotion,
+      promotionId: saved.promotionId
     };
   }
 
