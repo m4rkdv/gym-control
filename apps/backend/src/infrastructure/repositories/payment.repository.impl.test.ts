@@ -69,20 +69,34 @@ describe("MongoPaymentRepository", () => {
         expect(result).toHaveLength(2);
     });
 
-     test("findByMemberIdAndMonth returns payment within specific month", async () => {
+    test("findByMemberIdAndMonth returns payment within specific month", async () => {
         const memberId = new Types.ObjectId().toString();
         const testDate = new Date('2025-06-15');
-        
+
         // create pay in june
         await repository.save({
             ...createTestPayment(memberId),
             paymentDate: testDate
         });
-        
+
         const result = await repository.findByMemberIdAndMonth(memberId, testDate);
-        
+
         expect(result).not.toBeNull();
         expect(result?.memberId).toBe(memberId);
         expect(result?.paymentDate.getMonth()).toBe(5); // June is 5 (0-indexed)
+    });
+
+    test("findByMemberIdAndMonth returns null when no payment in month", async () => {
+        const memberId = new Types.ObjectId().toString();
+        const testDate = new Date('2025-06-15');
+
+        await repository.save({
+            ...createTestPayment(memberId),
+            paymentDate: new Date('2025-07-01')
+        });
+
+        const result = await repository.findByMemberIdAndMonth(memberId, testDate);
+
+        expect(result).toBeNull();
     });
 });
