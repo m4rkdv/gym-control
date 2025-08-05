@@ -54,4 +54,16 @@ describe("MongoSystemConfigRepository", () => {
         expect(result.suspensionMonths).toBe(6);
         expect(result.updatedBy).toBe('admin');
     });
+
+    test("default config is persisted after first call", async () => {
+        // First call creates default
+        await repository.getCurrent();
+
+        // Second call should return the same persisted config
+        const result = await repository.getCurrent();
+
+        const allConfigs = await SystemConfigModel.find({});
+        expect(allConfigs).toHaveLength(1);
+        expect(result.basePrice).toBe(28000);
+    });
 });
