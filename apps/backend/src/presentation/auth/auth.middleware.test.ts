@@ -54,4 +54,29 @@ describe('authenticateToken middleware', () => {
         expect(mockJson).toHaveBeenCalledWith({ error: 'Access token required' });
         expect(mockNext).not.toHaveBeenCalled();
     });
+
+    test('authorization header without Bearer prefix returns 401 with error message', async () => {
+        mockReq.headers = {
+            authorization: 'invalid.token'
+        };
+
+        await authenticateToken(mockReq as AuthRequest, mockRes as Response, mockNext);
+
+        expect(mockStatus).toHaveBeenCalledWith(401);
+        expect(mockJson).toHaveBeenCalledWith({ error: 'Access token required' });
+        expect(mockNext).not.toHaveBeenCalled();
+    });
+
+    test('valid token with complete payload calls next and sets user', async () => {
+        mockReq.headers = {
+            authorization: 'Bearer valid.token'
+        };
+        (JwtService.validateToken as Mock).mockResolvedValue(validPayload);
+
+        await authenticateToken(mockReq as AuthRequest, mockRes as Response, mockNext);
+
+        expect(mockReq.user).toEqual(validPayload);
+        expect(mockNext).toHaveBeenCalled();
+        expect(mockStatus).not.toHaveBeenCalled();
+    });
 });
