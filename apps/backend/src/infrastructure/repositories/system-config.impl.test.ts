@@ -66,4 +66,19 @@ describe("MongoSystemConfigRepository", () => {
         expect(allConfigs).toHaveLength(1);
         expect(result.basePrice).toBe(28000);
     });
+
+    test("getCurrent always returns a valid SystemConfig object", async () => {
+        const result = await repository.getCurrent();
+
+        expect(result).toHaveProperty('basePrice');
+        expect(result).toHaveProperty('gracePeriodDays');
+        expect(result).toHaveProperty('suspensionMonths');
+        expect(result).toHaveProperty('updatedAt');
+        expect(result).toHaveProperty('updatedBy');
+
+        expect(typeof result.basePrice).toBe('number');
+        expect(typeof result.gracePeriodDays).toBe('number');
+        expect(typeof result.suspensionMonths).toBe('number');
+        expect(typeof result.updatedBy).toBe('string');
+    });
 });
