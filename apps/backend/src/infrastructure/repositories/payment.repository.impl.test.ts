@@ -99,4 +99,26 @@ describe("MongoPaymentRepository", () => {
 
         expect(result).toBeNull();
     });
+
+    test("save preserves all payment properties correctly", async () => {
+        const paymentData: Omit<Payment, 'id'> = {
+            memberId: new Types.ObjectId().toString(),
+            amount: 14000.50,
+            paymentMethod: "cash",
+            paymentDate: new Date('2025-07-20'),
+            monthsCovered: 3,
+            isProportional: true,
+            hasPromotion: true,
+            promotionId: "promo-123"
+        };
+        
+        const result = await repository.save(paymentData);
+        
+        expect(result.amount).toBe(14000.50);
+        expect(result.paymentMethod).toBe("cash");
+        expect(result.monthsCovered).toBe(3);
+        expect(result.isProportional).toBe(true);
+        expect(result.hasPromotion).toBe(true);
+        expect(result.promotionId).toBe("promo-123");
+    });
 });
