@@ -31,7 +31,7 @@ describe("MongoSystemConfigRepository", () => {
         const result = await repository.getCurrent();
 
         expect(result).toBeDefined();
-        expect(result.basePrice).toBe(15000);
+        expect(result.basePrice).toBe(28000);
         expect(result.gracePeriodDays).toBe(10);
         expect(result.suspensionMonths).toBe(3);
         expect(result.updatedBy).toBe('system');
