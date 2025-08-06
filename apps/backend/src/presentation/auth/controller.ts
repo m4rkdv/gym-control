@@ -1,15 +1,17 @@
 import { Request, Response } from "express";
 import { JwtService } from "../services/jwt.service";
-import { MongoUserRepository } from "src/infrastructure/repositories/user.repository.impl";
-import { MongoMemberRepository } from '../../infrastructure/repositories/member.repository.impl';
 import { RegisterMember } from '@gymcontrol/domain/use-cases/members/register-member';
 import { CreateCredentialsForMember } from '@gymcontrol/domain/use-cases/members/create-credentials-for-member';
 import { AuthenticateUser } from '@gymcontrol/domain/services/auth/auth-user';
+import { UserRepository } from '@gymcontrol/domain/repositories/user-repository';
+import { MemberRepository } from '@gymcontrol/domain/repositories/member-repository';
 
 
 export class AuthController {
-    private userRepository = new MongoUserRepository();
-    private memberRepository = new MongoMemberRepository();
+    constructor(
+        private userRepository: UserRepository,
+        private memberRepository: MemberRepository
+    ) { }
 
     registerUser = async (req: Request, res: Response) => {
         try {
