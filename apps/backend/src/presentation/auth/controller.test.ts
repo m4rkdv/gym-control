@@ -52,7 +52,7 @@ describe('AuthController', () => {
         mockReq = { body: {} };
         mockRes = { json: mockJson, status: mockStatus };
 
-        controller = new AuthController();
+        controller = new AuthController(mockUserRepository(), mockMemberRepository());
 
         // Reset repositories
         (controller as any).userRepository = mockUserRepository();
@@ -250,12 +250,21 @@ describe('AuthController', () => {
             (controller as any).userRepository = mockUserRepository([userToLogin]);
             mockReq.body = { ...validLoginData };
 
-            await controller.loginUser(mockReq as ExpressRequest, mockRes as Response);
+            const result = await controller.loginUser(mockReq as ExpressRequest, mockRes as Response);
 
             expect(mockStatus).not.toHaveBeenCalled(); // 200 default
             expect(mockJson).toHaveBeenCalledWith({
-                user: true  // isAuthenticated flag
-            });
+                token: "mock-jwt-token",
+                user: {
+                    userName: 'jon.snow@example.com',
+                    role: 'member',
+                    isActive: true,
+                    id: "user-id",
+                    memberId: "member-id",
+                    createdAt: expect.anything(),
+                }
+            })
+
         });
 
         test('With incorrect password, returns 401 with error', async () => {
