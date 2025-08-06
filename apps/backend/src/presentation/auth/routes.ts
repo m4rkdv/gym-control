@@ -1,19 +1,21 @@
 import { Router } from 'express';
 import { AuthController } from './controller';
-import express from 'express';
+import { Dependencies } from '../dependencies';
 
 
 export class AuthRoutes {
+    constructor(private readonly dependencies: Dependencies) { }
 
-
-    get routes():Router{
+    get routes(): Router {
 
         const router = Router();
-        const controller = new AuthController();
-        
-        router.post('/login',controller.loginUser)
+        const controller = new AuthController(
+            this.dependencies.userRepository,
+            this.dependencies.memberRepository
+        );
 
-        router.post('/register',controller.registerUser)
+        router.post('/login', controller.loginUser)
+        router.post('/register', controller.registerUser)
 
         return router;
     }
