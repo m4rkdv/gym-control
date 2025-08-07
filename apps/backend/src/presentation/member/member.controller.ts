@@ -5,6 +5,7 @@ import { UserRepository } from '@gymcontrol/domain/repositories/user-repository'
 import { PaymentRepository } from '@gymcontrol/domain/repositories/payment-repository'; 
 import { SystemConfigRepository } from '@gymcontrol/domain/repositories/system-config-repository'; 
 import { ProcessPayment } from '@gymcontrol/domain/use-cases/payments/process-payment'; 
+import { VerifyMembershipStatus } from "@gymcontrol/domain/services/business-rules/verify-membership-status";
  
 export class MembersController { 
     constructor( 
@@ -51,6 +52,56 @@ export class MembersController {
             res.status(201).json({ 
                 payment: paymentResult.payment, 
                 updatedMember: paymentResult.updatedMember 
+            }); 
+ 
+        } catch (error: any) { 
+            res.status(500).json({ error: error.message }); 
+        } 
+    }
+
+    verifyMembershipStatus = async (req: AuthRequest, res: Response) => { 
+        try { 
+            const { memberId } = req.params; 
+ 
+            if (!memberId) { 
+                return res.status(400).json({ error: 'Member ID is required' }); 
+            } 
+ 
+            // Members can only view their own membership status
+            if (req.user?.role === 'member' && req.user?.id !== memberId) { 
+                const userRecord = await this.userRepository.findById(req.user.id); 
+                if (userRecord?.memberId !== memberId) { 
+                    return res.status(403).json({ error: 'Access denied' }); 
+                } 
+            } 
+ 
+            const verificationResult = await VerifyMembershipStatus( 
+                { 
+                    members: this.memberRepository, 
+                    systemConfig: this.systemConfigRepository 
+                }, 
+                memberId 
+            ); 
+ 
+            if ('message' in verificationResult) { 
+                return res.status(404).json({ error: verificationResult.message }); 
+            } 
+
+            // Get system config for grace period
+            const config = await this.systemConfigRepository.getCurrent();
+            
+            // Calculete days remaining
+            const today = new Date();
+            const paidUntil = new Date(verificationResult.paidUntil);
+            const diffMs = paidUntil.getTime() - today.getTime();
+            const daysRemaining = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+            
+            res.status(200).json({
+                memberId,
+                membershipStatus: verificationResult.membershipStatus,
+                paidUntil: verificationResult.paidUntil,
+                gracePeriod: config.gracePeriodDays,
+                daysRemaining
             }); 
  
         } catch (error: any) { 
