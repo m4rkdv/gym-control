@@ -259,4 +259,101 @@ describe('MembersController', () => {
       });
     });
   });
+
+  describe('getMyProfile', () => {
+    const mockUser = {
+      id: 'user-1',
+      userName: 'jon.snow',
+      role: 'member',
+    } as const;
+
+    const mockMember = {
+      id: 'member-1',
+      firstName: 'Jon',
+      lastName: 'Snow',
+      email: 'jon@snow.com',
+      membershipStatus: 'active'
+    };
+
+    beforeEach(() => {
+      vi.clearAllMocks();
+    });
+
+    test('unauthenticated user returns 401', async () => {
+      mockReq.user = undefined;
+
+      await controller.getMyProfile(mockReq as AuthRequest, mockRes as Response);
+
+      expect(mockStatus).toHaveBeenCalledWith(401);
+      expect(mockJson).toHaveBeenCalledWith({
+        error: 'Authentication required'
+      });
+    });
+
+    test('user without member profile returns 404', async () => {
+      mockReq.user = mockUser;
+
+      // User exists but has no memberId
+      vi.spyOn(controller['userRepository'], 'findById').mockResolvedValue({
+        id: 'user-1',
+        userName: 'jon.snow',
+        role: 'member',
+        memberId: null
+      });
+
+      await controller.getMyProfile(mockReq as AuthRequest, mockRes as Response);
+
+      expect(mockStatus).toHaveBeenCalledWith(404);
+      expect(mockJson).toHaveBeenCalledWith({
+        error: 'Member profile not found'
+      });
+    });
+
+    test('member not found returns 404', async () => {
+      mockReq.user = mockUser;
+
+      // User exists with memberId
+      vi.spyOn(controller['userRepository'], 'findById').mockResolvedValue(mockUser);
+      // But member doesn't exist
+      vi.spyOn(controller['memberRepository'], 'findById').mockResolvedValue(null);
+
+      await controller.getMyProfile(mockReq as AuthRequest, mockRes as Response);
+
+      expect(mockStatus).toHaveBeenCalledWith(404);
+      expect(mockJson).toHaveBeenCalledWith({
+        error: 'Member profile not found'
+      });
+    });
+
+    test('authenticated member returns profile data', async () => {
+      mockReq.user = mockUser;
+
+      vi.spyOn(controller['userRepository'], 'findById').mockResolvedValue({
+        id: 'user-1',
+        userName: 'jon.snow',
+        role: 'member',
+        memberId: 'member-1',
+      } as User);
+
+      vi.spyOn(controller['memberRepository'], 'findById').mockResolvedValue(mockMember);
+
+      await controller.getMyProfile(mockReq as AuthRequest, mockRes as Response);
+
+      expect(mockStatus).toHaveBeenCalledWith(200);
+      expect(mockJson).toHaveBeenCalledWith(mockMember);
+    });
+
+    test('returns 500 on repository error', async () => {
+      mockReq.user = mockUser;
+
+      vi.spyOn(controller['userRepository'], 'findById').mockRejectedValue(new Error('Database error'));
+
+      await controller.getMyProfile(mockReq as AuthRequest, mockRes as Response);
+
+      expect(mockStatus).toHaveBeenCalledWith(500);
+      expect(mockJson).toHaveBeenCalledWith({
+        error: 'Database error'
+      });
+    });
+  });
 });
