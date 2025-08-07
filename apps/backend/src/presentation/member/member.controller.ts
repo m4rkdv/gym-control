@@ -1,0 +1,60 @@
+import { Response } from "express"; 
+import { AuthRequest } from "../auth/auth.middleware"; 
+import { MemberRepository } from '@gymcontrol/domain/repositories/member-repository'; 
+import { UserRepository } from '@gymcontrol/domain/repositories/user-repository'; 
+import { PaymentRepository } from '@gymcontrol/domain/repositories/payment-repository'; 
+import { SystemConfigRepository } from '@gymcontrol/domain/repositories/system-config-repository'; 
+import { ProcessPayment } from '@gymcontrol/domain/use-cases/payments/process-payment'; 
+ 
+export class MembersController { 
+    constructor( 
+        private memberRepository: MemberRepository, 
+        private userRepository: UserRepository, 
+        private paymentRepository: PaymentRepository, 
+        private systemConfigRepository: SystemConfigRepository 
+    ) {} 
+ 
+    processPayment = async (req: AuthRequest, res: Response) => { 
+        try { 
+            const { memberId, amount, paymentMethod, monthsCovered, isProportional = false, hasPromotion = false, promotionId } = req.body; 
+ 
+            if (!memberId || !amount || !paymentMethod || !monthsCovered) { 
+                return res.status(400).json({ error: 'Missing required fields: memberId, amount, paymentMethod, monthsCovered' }); 
+            } 
+ 
+            // Only admin and trainer roles are authorized to process payments
+            if (req.user?.role !== 'admin' && req.user?.role !== 'trainer') { 
+                return res.status(403).json({ error: 'Insufficient permissions to process payments' }); 
+            } 
+ 
+            const paymentResult = await ProcessPayment( 
+                { 
+                    payments: this.paymentRepository, 
+                    members: this.memberRepository 
+                }, 
+                { 
+                    memberId, 
+                    amount: Number(amount), 
+                    paymentMethod, 
+                    paymentDate: new Date(), 
+                    monthsCovered: Number(monthsCovered), 
+                    isProportional, 
+                    hasPromotion, 
+                    promotionId 
+                } 
+            ); 
+ 
+            if ('message' in paymentResult) { 
+                return res.status(400).json({ error: paymentResult.message }); 
+            } 
+ 
+            res.status(201).json({ 
+                payment: paymentResult.payment, 
+                updatedMember: paymentResult.updatedMember 
+            }); 
+ 
+        } catch (error: any) { 
+            res.status(500).json({ error: error.message }); 
+        } 
+    } 
+}
