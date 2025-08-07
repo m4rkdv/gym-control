@@ -1,12 +1,13 @@
 import { describe, test, expect, beforeEach, vi, Mock } from 'vitest';
 import { Request as ExpressRequest, Response } from 'express';
-import { AuthController } from './controller';
+
 import { mockUserRepository } from '../../../../../domain/src/mocks/user-repository-mock';
 import { mockMemberRepository } from '../../../../../domain/src/mocks/member-repository-mock';
 import { JwtService } from '../services/jwt.service';
 import { Member } from '../../../../../domain/src/entities/Member';
 import { User } from '../../../../../domain/src/entities/User';
 import * as bcrypt from 'bcrypt';
+import { AuthController } from './auth.controller';
 
 // Mock JwtService
 vi.mock('../services/jwt.service', () => ({
