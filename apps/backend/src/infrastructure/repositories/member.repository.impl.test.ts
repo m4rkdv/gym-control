@@ -18,7 +18,7 @@ describe("MongoMemberRepository", () => {
         const uri = mongoServer.getUri();
         await mongoose.connect(uri);
         repository = new MongoMemberRepository();
-    }),30000;
+    }), 30000;
 
     afterAll(async () => {
         await mongoose.disconnect();
@@ -135,5 +135,55 @@ describe("MongoMemberRepository", () => {
         const result = await repository.findByEmail("jaime@bro.com");
 
         expect(result).toBeNull();
+    });
+
+    test("save - updating existing member returns updated document", async () => {
+        const originalMember: Omit<Member, 'id'> = {
+            firstName: "Ned",
+            lastName: "Stark",
+            email: "ned@winterfell.com",
+            weight: 75,
+            age: 45,
+            joinDate: new Date(),
+            membershipStatus: "active",
+            paidUntil: new Date(),
+        };
+
+        await MemberModel.deleteMany({});
+        const savedMember = await repository.save(originalMember);
+
+        const updatedData: Member = {
+            ...savedMember,
+            firstName: "Eddard",
+            age: 46,
+            weight: 76,
+        };
+
+        const result = await repository.save(updatedData);
+
+        expect(result.id).toBe(savedMember.id);
+        expect(result.firstName).toBe("Eddard");
+        expect(result.age).toBe(46);
+        expect(result.weight).toBe(76);
+    });
+
+    test("save - non-existent id throws error", async () => {
+        const fakeMember: Member = {
+            id: new Types.ObjectId().toString(),
+            firstName: "Ghost",
+            lastName: "Direwolf",
+            email: "ghost@north.com",
+            weight: 50,
+            age: 5,
+            joinDate: new Date(),
+            membershipStatus: "active",
+            paidUntil: new Date(),
+        };
+
+        await MemberModel.deleteMany({});
+
+        await expect(repository.save(fakeMember))
+            .rejects
+            .toThrow(`Member with id ${fakeMember.id} not found`);
     });
 });
