@@ -6,9 +6,23 @@ import { Member } from '@gymcontrol/domain/entities/Member';
 export class MongoMemberRepository implements MemberRepository {
   async save(member: Member): Promise<Member> {
     const { id, ...memberData } = member;
-    const memberDoc = new MemberModel(memberData);
-    const saved = await memberDoc.save();
-
+    let saved;
+    if (id) {
+      // Update existing member
+      saved = await MemberModel.findByIdAndUpdate(
+        id,
+        memberData,
+        { new: true }
+      );
+      
+      if (!saved) {
+        throw new Error(`Member with id ${id} not found`);
+      }
+    } else {
+      // Create new member
+      const memberDoc = new MemberModel(memberData);
+      saved = await memberDoc.save();
+    }
     return {
       id: saved._id.toString(),
       firstName: saved.firstName,
