@@ -149,4 +149,114 @@ describe('MembersController', () => {
       });
     });
   });
+
+  describe('verifyMembershipStatus', () => {
+    const activeMemberData = {
+      id: 'member-1',
+      membershipStatus: 'active',
+      paidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days in the future
+    };
+
+    beforeEach(() => {
+      vi.spyOn(controller['memberRepository'], 'findById').mockResolvedValue(activeMemberData);
+      vi.spyOn(controller['systemConfigRepository'], 'getCurrent').mockResolvedValue({
+        gracePeriodDays: 7,
+        suspensionMonths: 3
+      });
+    });
+
+    test('missing memberId returns 400 with error', async () => {
+      mockReq.params = {};
+
+      await controller.verifyMembershipStatus(mockReq as AuthRequest, mockRes as Response);
+
+      expect(mockStatus).toHaveBeenCalledWith(400);
+      expect(mockJson).toHaveBeenCalledWith({
+        error: 'Member ID is required'
+      });
+    });
+
+    test('member trying to access another member returns 403', async () => {
+      mockReq.params = { memberId: 'other-member' };
+      mockReq.user = {
+        id: 'user-1',
+        userName: 'test.member',
+        role: 'member',
+      };
+
+      await controller.verifyMembershipStatus(mockReq as AuthRequest, mockRes as Response);
+
+      expect(mockStatus).toHaveBeenCalledWith(403);
+      expect(mockJson).toHaveBeenCalledWith({
+        error: 'Access denied'
+      });
+    });
+
+    test('admin can access any member status', async () => {
+      mockReq.params = { memberId: 'member-1' };
+      mockReq.user = {
+        id: 'admin-1',
+        userName: 'admin',
+        role: 'admin'
+      };
+
+      await controller.verifyMembershipStatus(mockReq as AuthRequest, mockRes as Response);
+
+      expect(mockStatus).toHaveBeenCalledWith(200);
+      expect(mockJson).toHaveBeenCalledWith(expect.objectContaining({
+        memberId: 'member-1',
+        membershipStatus: 'active'
+      }));
+    });
+
+    test('returns correct membership status and days remaining', async () => {
+      mockReq.params = { memberId: 'member-1' };
+      mockReq.user = {
+        id: 'user-1',
+        userName: 'test.member',
+        role: 'member'
+      };
+
+      // Mock userRepository response
+      vi.spyOn(controller['userRepository'], 'findById').mockResolvedValue({
+        id: 'user-1',
+        memberId: 'member-1',
+      });
+
+      await controller.verifyMembershipStatus(mockReq as AuthRequest, mockRes as Response);
+
+      expect(mockStatus).toHaveBeenCalledWith(200);
+      expect(mockJson).toHaveBeenCalledWith({
+        memberId: 'member-1',
+        membershipStatus: 'active',
+        paidUntil: activeMemberData.paidUntil,
+        gracePeriod: 7,
+        daysRemaining: expect.any(Number)
+      });
+    });
+
+    test('returns 404 when member not found', async () => {
+      mockReq.params = { memberId: 'non-existent' };
+      vi.spyOn(controller['memberRepository'], 'findById').mockResolvedValue(null);
+
+      await controller.verifyMembershipStatus(mockReq as AuthRequest, mockRes as Response);
+
+      expect(mockStatus).toHaveBeenCalledWith(404);
+      expect(mockJson).toHaveBeenCalledWith({
+        error: 'Member not found'
+      });
+    });
+
+    test('returns 500 on repository error', async () => {
+      mockReq.params = { memberId: 'member-1' };
+      vi.spyOn(controller['memberRepository'], 'findById').mockRejectedValue(new Error('DB Error'));
+
+      await controller.verifyMembershipStatus(mockReq as AuthRequest, mockRes as Response);
+
+      expect(mockStatus).toHaveBeenCalledWith(500);
+      expect(mockJson).toHaveBeenCalledWith({
+        error: 'DB Error'
+      });
+    });
+  });
 });
