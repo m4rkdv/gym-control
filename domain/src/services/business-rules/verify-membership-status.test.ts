@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, vi } from 'vitest';
+import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import { VerifyMembershipStatus, VerifyMembershipStatusDependencies, calculateMembershipStatus } from './verify-membership-status';
 import { MockedMemberRepository, mockMemberRepository } from '../../mocks/member-repository-mock';
 import { MockedSystemConfigRepository, mockSystemConfigRepository } from '../../mocks/system-config-mock';
@@ -15,6 +15,8 @@ describe('VerifyMembershipStatus Use Case', () => {
     let baseMember: Member;
 
     beforeEach(() => {
+        vi.useFakeTimers({ toFake: ['Date'] });
+        vi.setSystemTime(new Date('2025-01-25'));
         defaultConfig = {
             basePrice: 100,
             gracePeriodDays: 10,
@@ -38,6 +40,10 @@ describe('VerifyMembershipStatus Use Case', () => {
         memberRepo = mockMemberRepository([]);
         systemConfigRepo = mockSystemConfigRepository(defaultConfig);
         deps = { members: memberRepo, systemConfig: systemConfigRepo };
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
     });
 
     // Type guard for InvalidDataError
@@ -99,7 +105,7 @@ describe('VerifyMembershipStatus Use Case', () => {
         expect(result.membershipStatus).toBe('active');
     });
 
-    test('memberWithExpiredPayment_attemptVerification_returnsActiveStatus', async () => {
+    test('memberWithExpiredPayment_attemptVerification_returnsInactiveStatus', async () => {
         const expiredDate = new Date();
         expiredDate.setDate(expiredDate.getDate() - 5); // 5 days ago (within grace period)
 
@@ -117,7 +123,7 @@ describe('VerifyMembershipStatus Use Case', () => {
             throw new Error('Expected Member but got InvalidDataError');
         }
 
-        expect(result.membershipStatus).toBe('active');
+        expect(result.membershipStatus).toBe('inactive');
     });
 
     test('memberWithExpiredPaymentBeyondGrace_attemptVerification_returnsInactiveStatus', async () => {
@@ -173,9 +179,8 @@ describe('VerifyMembershipStatus Use Case', () => {
         };
 
         memberRepo = mockMemberRepository([member]);
-        const saveSpy = vi.spyOn(memberRepo, 'save');
-
         deps = { members: memberRepo, systemConfig: systemConfigRepo };
+        const saveSpy = vi.spyOn(memberRepo, 'save');
 
         const result = await VerifyMembershipStatus(deps, 'member-1');
 
@@ -201,9 +206,9 @@ describe('VerifyMembershipStatus Use Case', () => {
             paidUntil: futureDate
         };
 
-        const saveSpy = vi.spyOn(memberRepo, 'save');
         memberRepo = mockMemberRepository([member]);
         deps = { members: memberRepo, systemConfig: systemConfigRepo };
+        const saveSpy = vi.spyOn(memberRepo, 'save');
 
         const result = await VerifyMembershipStatus(deps, 'member-1');
 
@@ -266,7 +271,7 @@ describe('calculateMembershipStatus helper function', () => {
         expect(result.membershipStatus).toBe('active');
     });
 
-    test('memberWithExpiredPaymentInGracePeriod_calculate_returnsActive', () => {
+    test('memberWithExpiredPaymentInGracePeriod_calculate_returnsInactive', () => {
         const today = new Date('2025-01-15');
         const expiredDate = new Date('2025-01-10'); // 5 days ago
 
@@ -277,7 +282,7 @@ describe('calculateMembershipStatus helper function', () => {
         };
 
         const result = calculateMembershipStatus(member, config, today);
-        expect(result.membershipStatus).toBe('active');
+        expect(result.membershipStatus).toBe('inactive');
     });
 
     test('memberWithExpiredPaymentBeyondGrace_calculate_returnsInactive', () => {
@@ -304,5 +309,34 @@ describe('calculateMembershipStatus helper function', () => {
 
         const result = calculateMembershipStatus(member, config, today);
         expect(result.membershipStatus).toBe('suspended');
+    });
+
+    // --- Tests de período de gracia mensual (hasta día 10) ---
+
+    test('previousMonthPayment_beforeGraceDate_returnsActive', () => {
+        const paidUntil = new Date(Date.UTC(2025, 0, 31)); // 31 Ene 2025
+        const today = new Date(Date.UTC(2025, 1, 5));      // 5 Feb 2025 (dentro del período de gracia)
+
+        const member = { ...baseMember, paidUntil };
+        const result = calculateMembershipStatus(member, config, today);
+        expect(result.membershipStatus).toBe('active');
+    });
+
+    test('previousMonthPayment_onGraceDateLimit_returnsActive', () => {
+        const paidUntil = new Date(Date.UTC(2025, 0, 31)); // 31 Ene 2025
+        const today = new Date(Date.UTC(2025, 1, 10));     // 10 Feb 2025 (límite del período de gracia)
+
+        const member = { ...baseMember, paidUntil };
+        const result = calculateMembershipStatus(member, config, today);
+        expect(result.membershipStatus).toBe('active');
+    });
+
+    test('previousMonthPayment_afterGraceDate_returnsInactive', () => {
+        const paidUntil = new Date(Date.UTC(2025, 0, 31)); // 31 Ene 2025
+        const today = new Date(Date.UTC(2025, 1, 11));     // 11 Feb 2025 (fuera del período de gracia)
+
+        const member = { ...baseMember, paidUntil };
+        const result = calculateMembershipStatus(member, config, today);
+        expect(result.membershipStatus).toBe('inactive');
     });
 });
