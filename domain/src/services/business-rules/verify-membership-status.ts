@@ -56,17 +56,54 @@ export function calculateMembershipStatus(
         return { ...member, membershipStatus: "inactive" };
     }
 
-    const diffMs = today.getTime() - paidUntil.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const normalize = (d: Date) => {
+        const n = new Date(d);
+        n.setUTCHours(0, 0, 0, 0);
+        return n;
+    };
+
+    const todayMid = normalize(today);
+    const paidMid = normalize(paidUntil);
 
     let status: Member["membershipStatus"];
 
-    if (diffDays <= config.gracePeriodDays) {
+    if (paidMid >= todayMid) {
+        // Payment is still valid
         status = "active";
-    } else if (diffDays >= config.suspensionMonths * 30) {
-        status = "suspended";
     } else {
-        status = "inactive";
+        // Grace period until the Nth day of the current month (e.g., 10th)
+        const graceLimit = new Date(Date.UTC(
+            todayMid.getUTCFullYear(),
+            todayMid.getUTCMonth(),
+            config.gracePeriodDays
+        ));
+
+        // Check if the paidUntil date belongs to the previous calendar month
+        const wasPreviousMonth = (
+            todayMid.getUTCFullYear() === paidMid.getUTCFullYear() &&
+            todayMid.getUTCMonth() - paidMid.getUTCMonth() === 1
+        ) || (
+            todayMid.getUTCMonth() === 0 &&
+            paidMid.getUTCFullYear() === todayMid.getUTCFullYear() - 1 &&
+            paidMid.getUTCMonth() === 11
+        );
+
+        const withinGraceWindow = todayMid <= graceLimit && wasPreviousMonth;
+
+        if (withinGraceWindow) {
+            status = "active";
+        } else {
+            // Determine suspension based on configured months difference
+            const monthsDiff =
+                (todayMid.getUTCFullYear() - paidMid.getUTCFullYear()) * 12 +
+                (todayMid.getUTCMonth() - paidMid.getUTCMonth());
+
+            if (monthsDiff >= config.suspensionMonths) {
+                status = "suspended";
+            } else {
+                status = "inactive";
+            }
+        }
     }
 
     return {
