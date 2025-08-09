@@ -3,7 +3,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose, { Types } from 'mongoose';
 import { MemberModel } from '../database/mongo/models/member.model';
 import { MongoMemberRepository } from './member.repository.impl';
-import { Member } from '../../../../../domain/src/entities/Member';
+import { CreateMemberDTO, Member } from '../../../../../domain/src/entities/Member';
 
 describe("MongoMemberRepository", () => {
     let mongoServer: MongoMemoryServer;
@@ -185,5 +185,31 @@ describe("MongoMemberRepository", () => {
         await expect(repository.save(fakeMember))
             .rejects
             .toThrow(`Member with id ${fakeMember.id} not found`);
+    });
+
+    describe("Create method .-", () => {
+        test("create - new member with valid data returns saved member", async () => {
+            const newMemberDTO: CreateMemberDTO = {
+                firstName: "Jon",
+                lastName: "Snow",
+                email: "jon@winterfell.com",
+                weight: 75,
+                age: 25,
+                joinDate: new Date("2025-01-15"),
+            };
+    
+            await MemberModel.deleteMany({});
+            const result = await repository.create(newMemberDTO);
+    
+            expect(result.id).toBeDefined();
+            expect(result.firstName).toBe("Jon");
+            expect(result.lastName).toBe("Snow");
+            expect(result.email).toBe("jon@winterfell.com");
+            expect(result.weight).toBe(75);
+            expect(result.age).toBe(25);
+            expect(result.joinDate).toEqual(new Date("2025-01-15"));
+            expect(result.membershipStatus).toBe("inactive");
+            expect(result.paidUntil).toEqual(new Date(0));
+        });
     });
 });
