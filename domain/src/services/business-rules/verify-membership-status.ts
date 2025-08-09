@@ -31,7 +31,9 @@ export async function VerifyMembershipStatus(
     const updatedMember = calculateMembershipStatus(member, config);
 
     if (updatedMember.membershipStatus !== member.membershipStatus) {
-        await members.save(updatedMember);
+        await members.update(memberId, {
+            membershipStatus: updatedMember.membershipStatus
+        });
     }
 
     return updatedMember;
@@ -83,10 +85,10 @@ export function calculateMembershipStatus(
             todayMid.getUTCFullYear() === paidMid.getUTCFullYear() &&
             todayMid.getUTCMonth() - paidMid.getUTCMonth() === 1
         ) || (
-            todayMid.getUTCMonth() === 0 &&
-            paidMid.getUTCFullYear() === todayMid.getUTCFullYear() - 1 &&
-            paidMid.getUTCMonth() === 11
-        );
+                todayMid.getUTCMonth() === 0 &&
+                paidMid.getUTCFullYear() === todayMid.getUTCFullYear() - 1 &&
+                paidMid.getUTCMonth() === 11
+            );
 
         const withinGraceWindow = todayMid <= graceLimit && wasPreviousMonth;
 
