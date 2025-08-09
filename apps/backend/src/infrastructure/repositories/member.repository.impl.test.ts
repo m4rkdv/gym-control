@@ -3,7 +3,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose, { Types } from 'mongoose';
 import { MemberModel } from '../database/mongo/models/member.model';
 import { MongoMemberRepository } from './member.repository.impl';
-import { CreateMemberDTO, Member } from '../../../../../domain/src/entities/Member';
+import { CreateMemberDTO, Member, UpdateMemberDTO } from '../../../../../domain/src/entities/Member';
 
 describe("MongoMemberRepository", () => {
     let mongoServer: MongoMemoryServer;
@@ -248,6 +248,43 @@ describe("MongoMemberRepository", () => {
 
             expect(result.membershipStatus).toBe("inactive");
             expect(result.paidUntil.getTime()).toBe(0); // new Date(0)
+        });
+    });
+
+    describe("Update method .-", () => {
+        test("update - existing member with valid updates returns updated member", async () => {
+            // First create a member
+            const originalMember: CreateMemberDTO = {
+                firstName: "Bran",
+                lastName: "Stark",
+                email: "bran@winterfell.com",
+                weight: 50,
+                age: 16,
+                joinDate: new Date("2025-01-01"),
+            };
+    
+            await MemberModel.deleteMany({});
+            const savedMember = await repository.create(originalMember);
+    
+            // Now update it
+            const updates: UpdateMemberDTO = {
+                firstName: "Brandon",
+                weight: 55,
+                membershipStatus: "active",
+                paidUntil: new Date("2025-12-31"),
+            };
+    
+            const result = await repository.update(savedMember.id, updates);
+    
+            expect(result.id).toBe(savedMember.id);
+            expect(result.firstName).toBe("Brandon"); // Updated
+            expect(result.lastName).toBe("Stark"); // Unchanged
+            expect(result.email).toBe("bran@winterfell.com"); // Unchanged
+            expect(result.weight).toBe(55); // Updated
+            expect(result.age).toBe(16); // Unchanged
+            expect(result.membershipStatus).toBe("active"); // Updated
+            expect(result.paidUntil).toEqual(new Date("2025-12-31")); // Updated
+            expect(result.joinDate).toEqual(new Date("2025-01-01")); // Unchanged (can't be updated)
         });
     });
 });
