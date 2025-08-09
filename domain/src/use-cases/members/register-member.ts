@@ -26,7 +26,7 @@ export async function RegisterMember(
     paidUntil: INITIAL_PAID_UNTIL,
   };
 
-  return members.save(member);
+  return members.create(member);
 }
 
 function validateData(dto: CreateMemberDTO): InvalidDataError | void {
