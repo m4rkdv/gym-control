@@ -38,7 +38,7 @@ export async function ChangeMemberStatus(
   { members, users }: ChangeMemberStatusDependencies,
   request: ChangeMemberStatusRequest
 ): Promise<InvalidDataError | Member> {
-  
+
   if (!request.memberId.trim()) return createInvalidDataError("Member ID must not be empty");
   if (!request.newStatus) return createInvalidDataError("New status is required");
   if (!request.requestedByUserId.trim()) return createInvalidDataError("Requesting user ID is required");
@@ -52,18 +52,15 @@ export async function ChangeMemberStatus(
   if (!requestingUser.isActive) return createInvalidDataError("Requesting user is not active");
 
   const validationError = validateStatusTransition(
-    member.membershipStatus, 
-    request.newStatus, 
+    member.membershipStatus,
+    request.newStatus,
     requestingUser.role
   );
   if (validationError) return validationError;
 
-  const updatedMember: Member = {
-    ...member,
+  return members.update(request.memberId, {
     membershipStatus: request.newStatus
-  };
-
-  return members.save(updatedMember);
+  });
 }
 
 /**
@@ -78,11 +75,11 @@ export async function ChangeMemberStatus(
  * @returns {InvalidDataError | void} - Returns an error if the transition is invalid; otherwise, nothing.
  */
 function validateStatusTransition(
-  currentStatus: Member["membershipStatus"], 
+  currentStatus: Member["membershipStatus"],
   newStatus: Member["membershipStatus"],
   userRole: string
 ): InvalidDataError | void {
-  
+
   if (currentStatus === newStatus) {
     return createInvalidDataError("Member already has this status");
   }
