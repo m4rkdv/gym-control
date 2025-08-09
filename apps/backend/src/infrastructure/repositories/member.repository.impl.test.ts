@@ -262,10 +262,10 @@ describe("MongoMemberRepository", () => {
                 age: 16,
                 joinDate: new Date("2025-01-01"),
             };
-    
+
             await MemberModel.deleteMany({});
             const savedMember = await repository.create(originalMember);
-    
+
             // Now update it
             const updates: UpdateMemberDTO = {
                 firstName: "Brandon",
@@ -273,9 +273,9 @@ describe("MongoMemberRepository", () => {
                 membershipStatus: "active",
                 paidUntil: new Date("2025-12-31"),
             };
-    
+
             const result = await repository.update(savedMember.id, updates);
-    
+
             expect(result.id).toBe(savedMember.id);
             expect(result.firstName).toBe("Brandon"); // Updated
             expect(result.lastName).toBe("Stark"); // Unchanged
@@ -285,6 +285,36 @@ describe("MongoMemberRepository", () => {
             expect(result.membershipStatus).toBe("active"); // Updated
             expect(result.paidUntil).toEqual(new Date("2025-12-31")); // Updated
             expect(result.joinDate).toEqual(new Date("2025-01-01")); // Unchanged (can't be updated)
+        });
+
+        test("update - partial updates only change specified fields", async () => {
+            const originalMember: CreateMemberDTO = {
+                firstName: "Catelyn",
+                lastName: "Stark",
+                email: "catelyn@winterfell.com",
+                weight: 65,
+                age: 40,
+                joinDate: new Date("2025-01-01"),
+            };
+
+            await MemberModel.deleteMany({});
+            const savedMember = await repository.create(originalMember);
+
+            // Update only weight and status
+            const updates: UpdateMemberDTO = {
+                weight: 63,
+                membershipStatus: "active",
+            };
+
+            const result = await repository.update(savedMember.id, updates);
+
+            expect(result.firstName).toBe("Catelyn"); // Unchanged
+            expect(result.lastName).toBe("Stark"); // Unchanged
+            expect(result.email).toBe("catelyn@winterfell.com"); // Unchanged
+            expect(result.weight).toBe(63); // Updated
+            expect(result.age).toBe(40); // Unchanged
+            expect(result.membershipStatus).toBe("active"); // Updated
+            expect(result.paidUntil).toEqual(new Date(0)); // Unchanged
         });
     });
 });
