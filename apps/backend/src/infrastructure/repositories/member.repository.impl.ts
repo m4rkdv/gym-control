@@ -26,7 +26,27 @@ export class MongoMemberRepository implements MemberRepository {
   }
 
   async update(memberId: string, updates: UpdateMemberDTO): Promise<Member> {
- 
+    const saved = await MemberModel.findByIdAndUpdate(
+      memberId,
+      updates,
+      { new: true }
+    );
+    
+    if (!saved) {
+      throw new Error(`Member with id ${memberId} not found`);
+    }
+
+    return {
+      id: saved._id.toString(),
+      firstName: saved.firstName,
+      lastName: saved.lastName,
+      email: saved.email,
+      weight: saved.weight,
+      age: saved.age,
+      joinDate: saved.joinDate,
+      membershipStatus: saved.membershipStatus,
+      paidUntil: saved.paidUntil
+    };
   }
 
   async save(member: CreateMemberDTO | Member): Promise<Member> {
