@@ -180,7 +180,7 @@ describe('VerifyMembershipStatus Use Case', () => {
 
         memberRepo = mockMemberRepository([member]);
         deps = { members: memberRepo, systemConfig: systemConfigRepo };
-        const saveSpy = vi.spyOn(memberRepo, 'save');
+        const updateSpy = vi.spyOn(memberRepo, 'update');
 
         const result = await VerifyMembershipStatus(deps, 'member-1');
 
@@ -189,9 +189,8 @@ describe('VerifyMembershipStatus Use Case', () => {
         }
 
         expect(result.membershipStatus).toBe('inactive');
-        expect(saveSpy).toHaveBeenCalledTimes(1);
-        expect(saveSpy).toHaveBeenCalledWith(expect.objectContaining({
-            id: 'member-1',
+        expect(updateSpy).toHaveBeenCalledTimes(1);
+        expect(updateSpy).toHaveBeenCalledWith('member-1', expect.objectContaining({
             membershipStatus: 'inactive'
         }));
     });
