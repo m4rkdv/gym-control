@@ -197,10 +197,10 @@ describe("MongoMemberRepository", () => {
                 age: 25,
                 joinDate: new Date("2025-01-15"),
             };
-    
+
             await MemberModel.deleteMany({});
             const result = await repository.create(newMemberDTO);
-    
+
             expect(result.id).toBeDefined();
             expect(result.firstName).toBe("Jon");
             expect(result.lastName).toBe("Snow");
@@ -210,6 +210,27 @@ describe("MongoMemberRepository", () => {
             expect(result.joinDate).toEqual(new Date("2025-01-15"));
             expect(result.membershipStatus).toBe("inactive");
             expect(result.paidUntil).toEqual(new Date(0));
+        });
+
+        test("create - member is persisted in database", async () => {
+            const newMemberDTO: CreateMemberDTO = {
+                firstName: "Arya",
+                lastName: "Stark",
+                email: "arya@winterfell.com",
+                weight: 55,
+                age: 18,
+                joinDate: new Date("2025-02-20"),
+            };
+
+            await MemberModel.deleteMany({});
+            const savedMember = await repository.create(newMemberDTO);
+
+            // Verify it's actually in the database
+            const foundInDb = await MemberModel.findById(savedMember.id);
+            expect(foundInDb).not.toBeNull();
+            expect(foundInDb?.firstName).toBe("Arya");
+            expect(foundInDb?.email).toBe("arya@winterfell.com");
+            expect(foundInDb?.membershipStatus).toBe("inactive");
         });
     });
 });
