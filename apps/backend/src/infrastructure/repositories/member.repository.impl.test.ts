@@ -232,5 +232,22 @@ describe("MongoMemberRepository", () => {
             expect(foundInDb?.email).toBe("arya@winterfell.com");
             expect(foundInDb?.membershipStatus).toBe("inactive");
         });
+
+        test("create - sets default values correctly", async () => {
+            const newMemberDTO: CreateMemberDTO = {
+                firstName: "Sansa",
+                lastName: "Stark",
+                email: "sansa@winterfell.com",
+                weight: 60,
+                age: 22,
+                joinDate: new Date(),
+            };
+
+            await MemberModel.deleteMany({});
+            const result = await repository.create(newMemberDTO);
+
+            expect(result.membershipStatus).toBe("inactive");
+            expect(result.paidUntil.getTime()).toBe(0); // new Date(0)
+        });
     });
 });
