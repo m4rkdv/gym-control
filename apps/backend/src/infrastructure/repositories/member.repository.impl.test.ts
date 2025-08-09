@@ -343,5 +343,37 @@ describe("MongoMemberRepository", () => {
             expect(foundInDb?.membershipStatus).toBe("active");
             expect(foundInDb?.lastName).toBe("Stark"); // Unchanged
         });
+
+        test("update - non-existent member throws error", async () => {
+            const fakeId = new Types.ObjectId().toString();
+            const updates: UpdateMemberDTO = {
+                firstName: "Ghost",
+            };
+
+            await MemberModel.deleteMany({});
+
+            await expect(repository.update(fakeId, updates))
+                .rejects
+                .toThrow(`Member with id ${fakeId} not found`);
+        });
+
+        test("update - empty updates object returns unchanged member", async () => {
+            const originalMember: CreateMemberDTO = {
+                firstName: "Rickon",
+                lastName: "Stark",
+                email: "rickon@winterfell.com",
+                weight: 45,
+                age: 12,
+                joinDate: new Date("2024-01-01"),
+            };
+
+            await MemberModel.deleteMany({});
+            const savedMember = await repository.create(originalMember);
+
+            const emptyUpdates: UpdateMemberDTO = {};
+            const result = await repository.update(savedMember.id, emptyUpdates);
+
+            expect(result).toEqual(savedMember);
+        });
     });
 });
