@@ -1,28 +1,17 @@
-
 import { MemberRepository } from '@gymcontrol/domain/repositories/member-repository';
 import { MemberModel } from '../database/mongo/models/member.model';
-import { Member } from '@gymcontrol/domain/entities/Member';
+import { CreateMemberDTO, Member, UpdateMemberDTO  } from '@gymcontrol/domain/entities/Member';
 
 export class MongoMemberRepository implements MemberRepository {
-  async save(member: Member): Promise<Member> {
-    const { id, ...memberData } = member;
-    let saved;
-    if (id) {
-      // Update existing member
-      saved = await MemberModel.findByIdAndUpdate(
-        id,
-        memberData,
-        { new: true }
-      );
-      
-      if (!saved) {
-        throw new Error(`Member with id ${id} not found`);
-      }
-    } else {
-      // Create new member
-      const memberDoc = new MemberModel(memberData);
-      saved = await memberDoc.save();
-    }
+  async create(member: CreateMemberDTO): Promise<Member> {
+    const memberDoc = new MemberModel({
+      ...member,
+      membershipStatus: "inactive",
+      paidUntil: new Date(0)
+    });
+    
+    const saved = await memberDoc.save();
+    
     return {
       id: saved._id.toString(),
       firstName: saved.firstName,
@@ -34,6 +23,19 @@ export class MongoMemberRepository implements MemberRepository {
       membershipStatus: saved.membershipStatus,
       paidUntil: saved.paidUntil
     };
+  }
+
+  async update(memberId: string, updates: UpdateMemberDTO): Promise<Member> {
+ 
+  }
+
+  async save(member: CreateMemberDTO | Member): Promise<Member> {
+    if ('id' in member && member.id) {
+      const { id, ...updates } = member;
+      return this.update(id, updates);
+    }
+
+    return this.create(member as CreateMemberDTO);
   }
 
   async findById(id: string): Promise<Member | null> {
