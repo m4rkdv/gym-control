@@ -316,5 +316,32 @@ describe("MongoMemberRepository", () => {
             expect(result.membershipStatus).toBe("active"); // Updated
             expect(result.paidUntil).toEqual(new Date(0)); // Unchanged
         });
+
+        test("update - changes are persisted in database", async () => {
+            const originalMember: CreateMemberDTO = {
+                firstName: "Robb",
+                lastName: "Stark",
+                email: "robb@winterfell.com",
+                weight: 80,
+                age: 20,
+                joinDate: new Date(),
+            };
+
+            await MemberModel.deleteMany({});
+            const savedMember = await repository.create(originalMember);
+
+            const updates: UpdateMemberDTO = {
+                firstName: "Rob",
+                membershipStatus: "active",
+            };
+
+            await repository.update(savedMember.id, updates);
+
+            // Verify changes in database
+            const foundInDb = await MemberModel.findById(savedMember.id);
+            expect(foundInDb?.firstName).toBe("Rob");
+            expect(foundInDb?.membershipStatus).toBe("active");
+            expect(foundInDb?.lastName).toBe("Stark"); // Unchanged
+        });
     });
 });
