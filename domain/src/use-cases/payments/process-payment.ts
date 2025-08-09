@@ -41,7 +41,9 @@ export async function ProcessPayment(
 
   // Return the saved payment and updated member information
   const savedPayment = await payments.save(payment);
-  const savedMember = await members.save(updatedMember);
+  
+  const { id, ...memberUpdates } = updatedMember;
+  const savedMember = await members.update(id, memberUpdates);
 
   return { payment: savedPayment, updatedMember: savedMember };
 }

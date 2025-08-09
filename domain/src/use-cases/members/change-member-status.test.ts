@@ -208,7 +208,7 @@ describe('ChangeMemberStatus Use Case', () => {
       requestedByUserId: 'admin-user-1'
     };
 
-    const saveSpy = vi.spyOn(memberRepo, 'save');
+    const updateSpy = vi.spyOn(memberRepo, 'update');
     const result = await ChangeMemberStatus(deps, request);
 
     if (isInvalidDataError(result)) {
@@ -216,7 +216,7 @@ describe('ChangeMemberStatus Use Case', () => {
     }
 
     expect(result.membershipStatus).toBe('deleted');
-    expect(saveSpy).toHaveBeenCalledTimes(1);
+    expect(updateSpy).toHaveBeenCalledTimes(1);
   });
 
   test('TrainerRole_ChangingStatusToInactive_UpdatesStatus', async () => {
@@ -226,7 +226,7 @@ describe('ChangeMemberStatus Use Case', () => {
       requestedByUserId: 'trainer-user-1'
     };
 
-    const saveSpy = vi.spyOn(memberRepo, 'save');
+    const updateSpy = vi.spyOn(memberRepo, 'update');
     const result = await ChangeMemberStatus(deps, request);
 
     if (isInvalidDataError(result)) {
@@ -234,8 +234,8 @@ describe('ChangeMemberStatus Use Case', () => {
     }
 
     expect(result.membershipStatus).toBe('inactive');
-    expect(saveSpy).toHaveBeenCalledTimes(1);
-    expect(saveSpy).toHaveBeenCalledWith(expect.objectContaining({
+    expect(updateSpy).toHaveBeenCalledTimes(1);
+    expect(updateSpy).toHaveBeenCalledWith(expect.objectContaining({
       id: 'member-1',
       membershipStatus: 'inactive'
     }));
