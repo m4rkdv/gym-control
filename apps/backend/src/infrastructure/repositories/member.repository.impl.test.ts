@@ -3,7 +3,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose, { Types } from 'mongoose';
 import { MemberModel } from '../database/mongo/models/member.model';
 import { MongoMemberRepository } from './member.repository.impl';
-import { Member } from '../../../../../domain/src/entities/Member';
+import { CreateMemberDTO, Member, UpdateMemberDTO } from '../../../../../domain/src/entities/Member';
 
 describe("MongoMemberRepository", () => {
     let mongoServer: MongoMemoryServer;
@@ -185,5 +185,195 @@ describe("MongoMemberRepository", () => {
         await expect(repository.save(fakeMember))
             .rejects
             .toThrow(`Member with id ${fakeMember.id} not found`);
+    });
+
+    describe("Create method .-", () => {
+        test("create - new member with valid data returns saved member", async () => {
+            const newMemberDTO: CreateMemberDTO = {
+                firstName: "Jon",
+                lastName: "Snow",
+                email: "jon@winterfell.com",
+                weight: 75,
+                age: 25,
+                joinDate: new Date("2025-01-15"),
+            };
+
+            await MemberModel.deleteMany({});
+            const result = await repository.create(newMemberDTO);
+
+            expect(result.id).toBeDefined();
+            expect(result.firstName).toBe("Jon");
+            expect(result.lastName).toBe("Snow");
+            expect(result.email).toBe("jon@winterfell.com");
+            expect(result.weight).toBe(75);
+            expect(result.age).toBe(25);
+            expect(result.joinDate).toEqual(new Date("2025-01-15"));
+            expect(result.membershipStatus).toBe("inactive");
+            expect(result.paidUntil).toEqual(new Date(0));
+        });
+
+        test("create - member is persisted in database", async () => {
+            const newMemberDTO: CreateMemberDTO = {
+                firstName: "Arya",
+                lastName: "Stark",
+                email: "arya@winterfell.com",
+                weight: 55,
+                age: 18,
+                joinDate: new Date("2025-02-20"),
+            };
+
+            await MemberModel.deleteMany({});
+            const savedMember = await repository.create(newMemberDTO);
+
+            // Verify it's actually in the database
+            const foundInDb = await MemberModel.findById(savedMember.id);
+            expect(foundInDb).not.toBeNull();
+            expect(foundInDb?.firstName).toBe("Arya");
+            expect(foundInDb?.email).toBe("arya@winterfell.com");
+            expect(foundInDb?.membershipStatus).toBe("inactive");
+        });
+
+        test("create - sets default values correctly", async () => {
+            const newMemberDTO: CreateMemberDTO = {
+                firstName: "Sansa",
+                lastName: "Stark",
+                email: "sansa@winterfell.com",
+                weight: 60,
+                age: 22,
+                joinDate: new Date(),
+            };
+
+            await MemberModel.deleteMany({});
+            const result = await repository.create(newMemberDTO);
+
+            expect(result.membershipStatus).toBe("inactive");
+            expect(result.paidUntil.getTime()).toBe(0); // new Date(0)
+        });
+    });
+
+    describe("Update method .-", () => {
+        test("update - existing member with valid updates returns updated member", async () => {
+            // First create a member
+            const originalMember: CreateMemberDTO = {
+                firstName: "Bran",
+                lastName: "Stark",
+                email: "bran@winterfell.com",
+                weight: 50,
+                age: 16,
+                joinDate: new Date("2025-01-01"),
+            };
+
+            await MemberModel.deleteMany({});
+            const savedMember = await repository.create(originalMember);
+
+            // Now update it
+            const updates: UpdateMemberDTO = {
+                firstName: "Brandon",
+                weight: 55,
+                membershipStatus: "active",
+                paidUntil: new Date("2025-12-31"),
+            };
+
+            const result = await repository.update(savedMember.id, updates);
+
+            expect(result.id).toBe(savedMember.id);
+            expect(result.firstName).toBe("Brandon"); // Updated
+            expect(result.lastName).toBe("Stark"); // Unchanged
+            expect(result.email).toBe("bran@winterfell.com"); // Unchanged
+            expect(result.weight).toBe(55); // Updated
+            expect(result.age).toBe(16); // Unchanged
+            expect(result.membershipStatus).toBe("active"); // Updated
+            expect(result.paidUntil).toEqual(new Date("2025-12-31")); // Updated
+            expect(result.joinDate).toEqual(new Date("2025-01-01")); // Unchanged (can't be updated)
+        });
+
+        test("update - partial updates only change specified fields", async () => {
+            const originalMember: CreateMemberDTO = {
+                firstName: "Catelyn",
+                lastName: "Stark",
+                email: "catelyn@winterfell.com",
+                weight: 65,
+                age: 40,
+                joinDate: new Date("2025-01-01"),
+            };
+
+            await MemberModel.deleteMany({});
+            const savedMember = await repository.create(originalMember);
+
+            // Update only weight and status
+            const updates: UpdateMemberDTO = {
+                weight: 63,
+                membershipStatus: "active",
+            };
+
+            const result = await repository.update(savedMember.id, updates);
+
+            expect(result.firstName).toBe("Catelyn"); // Unchanged
+            expect(result.lastName).toBe("Stark"); // Unchanged
+            expect(result.email).toBe("catelyn@winterfell.com"); // Unchanged
+            expect(result.weight).toBe(63); // Updated
+            expect(result.age).toBe(40); // Unchanged
+            expect(result.membershipStatus).toBe("active"); // Updated
+            expect(result.paidUntil).toEqual(new Date(0)); // Unchanged
+        });
+
+        test("update - changes are persisted in database", async () => {
+            const originalMember: CreateMemberDTO = {
+                firstName: "Robb",
+                lastName: "Stark",
+                email: "robb@winterfell.com",
+                weight: 80,
+                age: 20,
+                joinDate: new Date(),
+            };
+
+            await MemberModel.deleteMany({});
+            const savedMember = await repository.create(originalMember);
+
+            const updates: UpdateMemberDTO = {
+                firstName: "Rob",
+                membershipStatus: "active",
+            };
+
+            await repository.update(savedMember.id, updates);
+
+            // Verify changes in database
+            const foundInDb = await MemberModel.findById(savedMember.id);
+            expect(foundInDb?.firstName).toBe("Rob");
+            expect(foundInDb?.membershipStatus).toBe("active");
+            expect(foundInDb?.lastName).toBe("Stark"); // Unchanged
+        });
+
+        test("update - non-existent member throws error", async () => {
+            const fakeId = new Types.ObjectId().toString();
+            const updates: UpdateMemberDTO = {
+                firstName: "Ghost",
+            };
+
+            await MemberModel.deleteMany({});
+
+            await expect(repository.update(fakeId, updates))
+                .rejects
+                .toThrow(`Member with id ${fakeId} not found`);
+        });
+
+        test("update - empty updates object returns unchanged member", async () => {
+            const originalMember: CreateMemberDTO = {
+                firstName: "Rickon",
+                lastName: "Stark",
+                email: "rickon@winterfell.com",
+                weight: 45,
+                age: 12,
+                joinDate: new Date("2024-01-01"),
+            };
+
+            await MemberModel.deleteMany({});
+            const savedMember = await repository.create(originalMember);
+
+            const emptyUpdates: UpdateMemberDTO = {};
+            const result = await repository.update(savedMember.id, emptyUpdates);
+
+            expect(result).toEqual(savedMember);
+        });
     });
 });
