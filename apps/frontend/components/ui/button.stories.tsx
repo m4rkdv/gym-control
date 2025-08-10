@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from './button';
-import { Heart, Download, Plus, Settings, ChevronDown, Mail } from 'lucide-react';
+import { Heart, Settings} from 'lucide-react';
 
 const meta: Meta<typeof Button> = {
     title: 'Components/Button',
@@ -159,4 +159,41 @@ export const VariantsShowcase: Story = {
         },
         layout: 'fullscreen',
     },
+};
+
+// Settings Button
+export const SettingsButton: Story = {
+  args: {
+    children: (
+      <>
+        Settings
+        <Settings />
+      </>
+    ),
+    variant: 'default',
+    size: 'default',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Button for settingswith icon positioned on the right side of the text.',
+      },
+    },
+  },
+};
+
+// Login Button
+export const LoginButton: Story = {
+  args: {
+    children:"Login",
+    variant: 'default',
+    size: 'default',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Button for login with login text.',
+      },
+    },
+  },
 };
