@@ -3,7 +3,7 @@ import { Button } from './button';
 import { Heart, Settings} from 'lucide-react';
 
 const meta: Meta<typeof Button> = {
-    title: 'Components/Button',
+    title: 'UI/Button',
     component: Button,
     parameters: {
         layout: 'centered',
