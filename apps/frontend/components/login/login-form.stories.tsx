@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { LoginForm } from './login-form';
 
-
-const meta = {
+const meta: Meta<typeof LoginForm> = {
   title: 'Components/LoginForm',
   component: LoginForm,
   parameters: {
@@ -32,7 +31,7 @@ const meta = {
       description: 'URL for the sign-up link'
     }
   }
-} satisfies Meta<typeof LoginForm>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;
