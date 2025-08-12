@@ -14,7 +14,7 @@ interface EmailInputProps {
 
 export function EmailInput({
   className,
-  label = "Email",
+  label = "Username",
   placeholder = "m@example.com",
   required = true,
   value,
@@ -25,8 +25,8 @@ export function EmailInput({
     <div className={cn("grid gap-3", disabled && "opacity-60", className)}>
       <Label htmlFor="email">{label}</Label>
       <Input
-        id="email"
-        type="email"
+        id="username"
+        type="text"
         placeholder={placeholder}
         required={required}
         value={value}
