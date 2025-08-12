@@ -9,6 +9,7 @@ import { PasswordInput } from "./password-input"
 import { useRouter } from "next/navigation"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
+import { useAuth } from "@/contexts/auth-context"
 
 interface LoginFormProps extends React.ComponentProps<"div"> {
   title?: string
@@ -24,6 +25,7 @@ export function LoginForm({
   ...props
 }: LoginFormProps) {
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -42,22 +44,18 @@ export function LoginForm({
       })
 
       const responseClone = response.clone();
-      
+
       try {
         const data = await responseClone.json();
-        
+
         if (!response.ok) {
           throw new Error(data.error || `HTTP error! status: ${response.status}`);
         }
 
-        if (typeof localStorage !== 'undefined') {
-          localStorage.setItem("token", data.token)
-          localStorage.setItem("user", JSON.stringify(data.user))
-        }
+        login(data.user, data.token);
 
         router.push("/dashboard")
       } catch (jsonError) {
-  
         const textError = await response.text();
         throw new Error(textError || `HTTP error! status: ${response.status}`);
       }
@@ -73,23 +71,29 @@ export function LoginForm({
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-6">
           <LogoTitle title={title} signUpText={signUpText} signUpHref={signUpHref} />
-          
+
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription>{(() => {
+                try {
+                  return JSON.parse(error).error;
+                } catch (e) {
+                  return error;
+                }
+              })()}</AlertDescription>
             </Alert>
           )}
-          
+
           <div className="flex flex-col gap-6">
-            <EmailInput 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
+            <EmailInput
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
             />
-            <PasswordInput 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
+            <PasswordInput
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
             />
             <LoginButton isLoading={isLoading} />
