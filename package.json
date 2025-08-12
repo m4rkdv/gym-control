@@ -7,7 +7,8 @@
   "private": true,
   "workspaces": [
     "domain",
-    "apps/backend"
+    "apps/backend",
+    "apps/frontend"
   ],
   "scripts": {
     "start": "yarn workspace @gymcontrol/backend start",
@@ -19,5 +20,13 @@
   },
   "devDependencies": {
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "lucide-react": "^0.539.0"
+  },
+  "resolutions": {
+    "vite": "^5.4.x",
+    "vitest": "^2.1.x",
+    "rollup": "^4.21.x"
   }
 }
