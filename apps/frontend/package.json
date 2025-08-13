@@ -1,5 +1,5 @@
 {
-  "name": "gym-control-front",
+  "name": "@gymcontrol/frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:sb": "vitest --config vitest.config.ts run",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
