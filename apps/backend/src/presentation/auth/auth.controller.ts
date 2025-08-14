@@ -1,10 +1,6 @@
 import { Request, Response } from "express";
 import { JwtService } from "../services/jwt.service";
-import { RegisterMember } from '@gymcontrol/domain/use-cases/members/register-member';
-import { CreateCredentialsForMember } from '@gymcontrol/domain/use-cases/members/create-credentials-for-member';
-import { AuthenticateUser } from '@gymcontrol/domain/services/auth/auth-user';
-import { UserRepository } from '@gymcontrol/domain/repositories/user-repository';
-import { MemberRepository } from '@gymcontrol/domain/repositories/member-repository';
+import { RegisterMember, CreateCredentialsForMember, AuthenticateUser, UserRepository, MemberRepository } from '@gymcontrol/domain';
 
 
 export class AuthController {

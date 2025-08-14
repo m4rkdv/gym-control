@@ -2,6 +2,7 @@ import type { Preview } from '@storybook/nextjs-vite';
 import '../app/globals.css';
 import { AppRouterDecorator } from './decorator/next-router-decorator';
 import { MockFetchDecorator } from './decorator/fetch-decorator';
+import { AuthProviderDecorator } from './decorator/auth-provider-decorator';
 
 
 const preview: Preview = {
@@ -18,7 +19,8 @@ const preview: Preview = {
   },
   decorators: [
     AppRouterDecorator,
-    MockFetchDecorator
+    MockFetchDecorator,
+    AuthProviderDecorator,
   ],
 };
 

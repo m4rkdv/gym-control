@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { User } from '../../../../../../../domain/src/entities/User';
+import { User } from '@gymcontrol/domain';
 
 export interface UserDocument extends Omit<User, 'id'>, Document {
   _id: string;

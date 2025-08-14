@@ -1,6 +1,5 @@
-import { User } from '@gymcontrol/domain/entities/User';
+import { User, UserRepository } from '@gymcontrol/domain';
 import { UserModel } from '../database/mongo/models/user.model';
-import { UserRepository } from '@gymcontrol/domain/repositories/user-repository';
 
 
 export class MongoUserRepository implements UserRepository {

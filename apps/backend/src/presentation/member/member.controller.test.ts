@@ -5,8 +5,7 @@ import { mockMemberRepository } from '../../../../../domain/src/mocks/member-rep
 import { mockUserRepository } from '../../../../../domain/src/mocks/user-repository-mock';
 import { mockPaymentRepository } from '../../../../../domain/src/mocks/payment-repository-mock';
 
-import { Member } from '../../../../../domain/src/entities/Member';
-import { User } from '../../../../../domain/src/entities/User';
+import { Member, User } from '@gymcontrol/domain';
 import { AuthRequest } from '../auth/auth.middleware';
 import { MembersController } from './member.controller';
 import { mockSystemConfigRepository } from '../../../../../domain/src/mocks/system-config-mock';

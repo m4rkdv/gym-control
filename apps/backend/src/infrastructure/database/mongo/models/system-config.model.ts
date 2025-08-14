@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { SystemConfig } from '@gymcontrol/domain/entities/SystemConfig';
+import { SystemConfig } from '@gymcontrol/domain';
 
 export interface SystemConfigDocument extends Omit<SystemConfig, 'id'>, Document {
   _id: string;

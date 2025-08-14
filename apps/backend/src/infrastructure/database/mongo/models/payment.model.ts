@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { Payment } from '@gymcontrol/domain/entities/Payment';
+import { Payment } from '@gymcontrol/domain';
 
 export interface PaymentDocument extends Omit<Payment, 'id'>, Document {
   _id: string;

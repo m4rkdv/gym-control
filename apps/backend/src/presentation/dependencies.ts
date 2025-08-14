@@ -1,9 +1,6 @@
-import { MemberRepository } from '@gymcontrol/domain/repositories/member-repository';
-import { UserRepository } from '@gymcontrol/domain/repositories/user-repository';
+import { MemberRepository, UserRepository, PaymentRepository, SystemConfigRepository } from '@gymcontrol/domain';
 import { MongoMemberRepository } from 'src/infrastructure/repositories/member.repository.impl';
 import { MongoUserRepository } from 'src/infrastructure/repositories/user.repository.impl';
-import { PaymentRepository } from '../../../../domain/src/repositories/payment-repository';
-import { SystemConfigRepository } from '../../../../domain/src/repositories/system-config-repository';
 import { MongoPaymentRepository } from 'src/infrastructure/repositories/payment.repository.impl';
 import { MongoSystemConfigRepository } from 'src/infrastructure/repositories/system-config.impl';
 

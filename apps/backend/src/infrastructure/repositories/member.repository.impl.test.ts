@@ -3,7 +3,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose, { Types } from 'mongoose';
 import { MemberModel } from '../database/mongo/models/member.model';
 import { MongoMemberRepository } from './member.repository.impl';
-import { CreateMemberDTO, Member, UpdateMemberDTO } from '../../../../../domain/src/entities/Member';
+import { CreateMemberDTO, Member, UpdateMemberDTO } from '@gymcontrol/domain';
 
 describe("MongoMemberRepository", () => {
     let mongoServer: MongoMemoryServer;

@@ -1,9 +1,6 @@
 import { Router } from 'express';
 import { authenticateToken } from '../auth/auth.middleware';
-import { MemberRepository } from '@gymcontrol/domain/repositories/member-repository';
-import { UserRepository } from '@gymcontrol/domain/repositories/user-repository';
-import { PaymentRepository } from '@gymcontrol/domain/repositories/payment-repository';
-import { SystemConfigRepository } from '@gymcontrol/domain/repositories/system-config-repository';
+import { MemberRepository, UserRepository, PaymentRepository, SystemConfigRepository } from '@gymcontrol/domain';
 import { MembersController } from './member.controller';
 
 export class MembersRoutes {
