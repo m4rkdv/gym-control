@@ -3,7 +3,6 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 
-// Evitamos top-level await (esbuild lo intentaba empaquetar como CJS) usando config async
 export default defineConfig(async () => {
   const dirname =
     typeof __dirname !== 'undefined'

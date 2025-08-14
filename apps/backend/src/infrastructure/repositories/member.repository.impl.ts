@@ -1,6 +1,5 @@
-import { MemberRepository } from '@gymcontrol/domain/repositories/member-repository';
+import { MemberRepository, CreateMemberDTO, Member, UpdateMemberDTO } from '@gymcontrol/domain';
 import { MemberModel } from '../database/mongo/models/member.model';
-import { CreateMemberDTO, Member, UpdateMemberDTO  } from '@gymcontrol/domain/entities/Member';
 
 export class MongoMemberRepository implements MemberRepository {
   async create(member: CreateMemberDTO): Promise<Member> {

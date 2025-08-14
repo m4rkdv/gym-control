@@ -1,11 +1,6 @@
 import { Response } from "express";
 import { AuthRequest } from "../auth/auth.middleware";
-import { MemberRepository } from '@gymcontrol/domain/repositories/member-repository';
-import { UserRepository } from '@gymcontrol/domain/repositories/user-repository';
-import { PaymentRepository } from '@gymcontrol/domain/repositories/payment-repository';
-import { SystemConfigRepository } from '@gymcontrol/domain/repositories/system-config-repository';
-import { ProcessPayment } from '@gymcontrol/domain/use-cases/payments/process-payment';
-import { VerifyMembershipStatus } from "@gymcontrol/domain/services/business-rules/verify-membership-status";
+import { MemberRepository, UserRepository, PaymentRepository, SystemConfigRepository, ProcessPayment, VerifyMembershipStatus } from '@gymcontrol/domain';
 
 export class MembersController {
     constructor(

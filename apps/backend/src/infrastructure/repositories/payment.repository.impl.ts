@@ -1,5 +1,4 @@
-import { Payment } from '@gymcontrol/domain/entities/Payment';
-import { PaymentRepository } from '@gymcontrol/domain/repositories/payment-repository';
+import { Payment, PaymentRepository } from '@gymcontrol/domain';
 import { PaymentModel } from '../database/mongo/models/payment.model';
 
 export class MongoPaymentRepository implements PaymentRepository {

@@ -4,8 +4,7 @@ import { Request as ExpressRequest, Response } from 'express';
 import { mockUserRepository } from '../../../../../domain/src/mocks/user-repository-mock';
 import { mockMemberRepository } from '../../../../../domain/src/mocks/member-repository-mock';
 import { JwtService } from '../services/jwt.service';
-import { Member } from '../../../../../domain/src/entities/Member';
-import { User } from '../../../../../domain/src/entities/User';
+import { Member, User } from '@gymcontrol/domain';
 import * as bcrypt from 'bcrypt';
 import { AuthController } from './auth.controller';
 

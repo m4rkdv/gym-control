@@ -3,7 +3,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose, { Types } from 'mongoose';
 import { UserModel } from '../database/mongo/models/user.model';
 import { MongoUserRepository } from './user.repository.impl';
-import { User } from '../../../../../domain/src/entities/User';
+import { User } from '@gymcontrol/domain';
 
 
 describe("MongoUserRepository", () => {

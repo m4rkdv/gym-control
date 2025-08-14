@@ -1,5 +1,4 @@
-import { SystemConfig } from '@gymcontrol/domain/entities/SystemConfig';
-import { SystemConfigRepository } from '@gymcontrol/domain/repositories/system-config-repository';
+import { SystemConfig, SystemConfigRepository } from '@gymcontrol/domain';
 import { SystemConfigModel } from '../database/mongo/models/system-config.model';
 
 export class MongoSystemConfigRepository implements SystemConfigRepository {

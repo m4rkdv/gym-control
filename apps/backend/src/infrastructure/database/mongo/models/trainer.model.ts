@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { Trainer } from '@gymcontrol/domain/entities/Trainer';
+import { Trainer } from '@gymcontrol/domain';
 
 export interface TrainerDocument extends Omit<Trainer, 'id'>, Document {
   _id: string;

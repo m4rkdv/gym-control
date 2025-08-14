@@ -3,7 +3,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose, { Types } from 'mongoose';
 import { PaymentModel } from '../database/mongo/models/payment.model';
 import { MongoPaymentRepository } from './payment.repository.impl';
-import { Payment } from '../../../../../domain/src/entities/Payment';
+import { Payment } from '@gymcontrol/domain';
 
 
 
