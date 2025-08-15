@@ -71,8 +71,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("token", userToken)
       localStorage.setItem("user", JSON.stringify(userData))
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Login failed'
+      const message = err instanceof Error ? err.message : String(err)
       setError(message)
+      throw err
     } finally {
       setIsLoading(false)
     }
