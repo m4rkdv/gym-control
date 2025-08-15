@@ -20,6 +20,13 @@ export function ApiProvider({ children }: { children: ReactNode }) {
     headers: { "Content-Type": "application/json" },
   });
 
+  api.interceptors.request.use((config) => {
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
+
   const get = async <T,>(endpoint: string): Promise<T> => {
     const res = await api.get<T>(endpoint);
     return res.data;
