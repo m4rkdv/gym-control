@@ -140,4 +140,32 @@ describe('useApiCall hook', () => {
 
         expect(result.current.error).toBeNull();
     });
+
+    test('setError with custom message updates error state', () => {
+        const { result } = renderHook(() => useApiCall(), { wrapper: TestWrapper });
+
+        act(() => {
+            result.current.setError('Custom error message');
+        });
+
+        expect(result.current.error).toBe('Custom error message');
+    });
+
+    test('network error in request sets error message correctly', async () => {
+        server.use(
+            http.get('*/api/users', () => {
+                throw new Error('Network failure');
+            })
+        );
+
+        const { result } = renderHook(() => useApiCall(), { wrapper: TestWrapper });
+
+        let response: unknown;
+        await act(async () => {
+            response = await result.current.executeGet('/api/users');
+        });
+
+        expect(response).toBeNull();
+        expect(result.current.error).toBe('Network failure');
+    });
 });
