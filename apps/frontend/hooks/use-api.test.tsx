@@ -61,4 +61,27 @@ describe('useApiCall hook', () => {
     expect(result.current.loading).toBe(false);
     expect(result.current.error).toBeNull();
   });
+
+   test('executeGet with valid endpoint returns data and manages loading state', async () => {
+    const { result } = renderHook(() => useApiCall(), { wrapper: TestWrapper });
+
+    expect(result.current.loading).toBe(false);
+
+    let response: unknown;
+    let getPromise: Promise<unknown>;
+    
+    act(() => {
+      getPromise = result.current.executeGet('/api/users');
+    });
+
+    expect(result.current.loading).toBe(true);
+
+    await act(async () => {
+      response = await getPromise;
+    });
+
+    expect(response).toBeTruthy();
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBeNull();
+  });
 });
