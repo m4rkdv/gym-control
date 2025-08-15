@@ -84,4 +84,29 @@ describe('useApiCall hook', () => {
     expect(result.current.loading).toBe(false);
     expect(result.current.error).toBeNull();
   });
+
+    test('executePost with payload creates data successfully', async () => {
+    const payload = { name: 'Test User', email: 'test@example.com' };
+    const { result } = renderHook(() => useApiCall(), { wrapper: TestWrapper });
+
+    let response: unknown;
+    await act(async () => {
+      response = await result.current.executePost('/api/users', payload);
+    });
+
+    expect(response).toBeTruthy();
+    expect(result.current.error).toBeNull();
+  });
+
+  test('executePost without payload creates data successfully', async () => {
+    const { result } = renderHook(() => useApiCall(), { wrapper: TestWrapper });
+
+    let response: unknown;
+    await act(async () => {
+      response = await result.current.executePost('/api/users');
+    });
+
+    expect(response).toBeTruthy();
+    expect(result.current.error).toBeNull();
+  });
 });
