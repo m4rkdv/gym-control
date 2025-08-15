@@ -104,4 +104,41 @@ describe('AuthContext', () => {
     expect(result.current.token).toBeNull();
     expect(result.current.error).toBe('Internal server error');
   });
+
+  test('logout clears authentication data', async () => {
+    // Setup initial state
+    localStorageMock.getItem
+      .mockReturnValueOnce('existing-token')
+      .mockReturnValueOnce(JSON.stringify(validUser));
+
+    const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    act(() => {
+      result.current.logout();
+    });
+
+    expect(result.current.user).toBeNull();
+    expect(result.current.token).toBeNull();
+    expect(localStorageMock.removeItem).toHaveBeenCalledWith('token');
+    expect(localStorageMock.removeItem).toHaveBeenCalledWith('user');
+  });
+
+  test('provider initializes with stored token and user data', async () => {
+    localStorageMock.getItem
+      .mockReturnValueOnce('stored-token')
+      .mockReturnValueOnce(JSON.stringify(validUser));
+
+    const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.user?.userName).toBe(validUser.userName);
+    expect(result.current.token).toBe('stored-token');
+  });
 });
