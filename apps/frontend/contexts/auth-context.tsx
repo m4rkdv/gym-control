@@ -1,29 +1,21 @@
 "use client"
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react"
-
-type User = {
-  id: string
-  userName: string
-  role: string
-  memberId?: string
-  trainerId?: string
-  isActive: boolean
-}
+import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { User } from "@gymcontrol/domain/entities/User";
 
 interface AuthContextType {
-  user: User | null
-  token: string | null
-  login: (userName: string, password: string) => Promise<void>
-  logout: () => void
-  isLoading: boolean
-  error: string | null
+  user: Omit<User, 'password'> | null,
+  token: string | null,
+  login: (userName: string, password: string) => Promise<void>,
+  logout: () => void,
+  isLoading: boolean,
+  error: string | null,
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<Omit<User, 'password'> | null>(null)
   const [token, setToken] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
