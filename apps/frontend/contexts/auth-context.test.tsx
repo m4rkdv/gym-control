@@ -154,4 +154,21 @@ describe('AuthContext', () => {
     expect(result.current.user).toBeNull();
     expect(result.current.token).toBeNull();
   });
+
+  test('provider initializes with invalid stored user data', async () => {
+    localStorageMock.getItem
+      .mockReturnValueOnce('stored-token')
+      .mockReturnValueOnce('invalid-json');
+
+    const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.user).toBeNull();
+    expect(result.current.token).toBeNull();
+    expect(localStorageMock.removeItem).toHaveBeenCalledWith('token');
+    expect(localStorageMock.removeItem).toHaveBeenCalledWith('user');
+  });
 });
