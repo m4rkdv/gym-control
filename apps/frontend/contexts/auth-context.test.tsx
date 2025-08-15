@@ -171,4 +171,41 @@ describe('AuthContext', () => {
     expect(localStorageMock.removeItem).toHaveBeenCalledWith('token');
     expect(localStorageMock.removeItem).toHaveBeenCalledWith('user');
   });
+
+  test('login clears previous error state', async () => {
+    const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
+
+    // First, simulate a failed login
+    server.use(
+      http.post('*/api/auth/login', () => {
+        return HttpResponse.text('First error', { status: 401 });
+      })
+    );
+
+    await act(async () => {
+      try {
+        await result.current.login('wrong', 'credentials');
+      } catch {
+      }
+    });
+
+    expect(result.current.error).toBe('First error');
+
+    // Now simulate a successful login with new handler
+    server.use(
+      http.post('*/api/auth/login', () => {
+        return HttpResponse.json({
+          user: validUser,
+          token: 'mock-jwt-token'
+        });
+      })
+    );
+
+    await act(async () => {
+      await result.current.login(validCredentials.userName, validCredentials.password);
+    });
+
+    expect(result.current.error).toBeNull();
+    expect(result.current.user?.userName).toBe(validUser.userName);
+  });
 });
