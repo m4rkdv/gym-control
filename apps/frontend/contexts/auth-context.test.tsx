@@ -208,4 +208,37 @@ describe('AuthContext', () => {
     expect(result.current.error).toBeNull();
     expect(result.current.user?.userName).toBe(validUser.userName);
   });
+
+  test('login sets loading state correctly', async () => {
+    server.use(
+      http.post('*/api/auth/login', async () => {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        return HttpResponse.json({
+          user: validUser,
+          token: 'mock-jwt-token'
+        });
+      })
+    );
+
+    const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
+
+    // Initially not loading after mount
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    // Start login - should set loading to true
+    act(() => {
+      result.current.login(validCredentials.userName, validCredentials.password);
+    });
+
+    expect(result.current.isLoading).toBe(true);
+
+    // Wait for login to complete - should set loading to false
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.user?.userName).toBe(validUser.userName);
+  });
 });
