@@ -63,4 +63,45 @@ describe('AuthContext', () => {
     expect(result.current.error).toBe('Invalid credentials');
   });
 
+  test('login with network error sets error state', async () => {
+    server.use(
+      http.post('*/api/auth/login', () => {
+        return HttpResponse.error();
+      })
+    );
+
+    const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
+
+    await act(async () => {
+      try {
+        await result.current.login(validCredentials.userName, validCredentials.password);
+      } catch {
+      }
+    });
+
+    expect(result.current.user).toBeNull();
+    expect(result.current.token).toBeNull();
+    expect(result.current.error).toBeTruthy();
+  });
+
+  test('login with server error sets error state', async () => {
+    server.use(
+      http.post('*/api/auth/login', () => {
+        return HttpResponse.text('Internal server error', { status: 500 });
+      })
+    );
+
+    const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
+
+    await act(async () => {
+      try {
+        await result.current.login(validCredentials.userName, validCredentials.password);
+      } catch {
+      }
+    });
+
+    expect(result.current.user).toBeNull();
+    expect(result.current.token).toBeNull();
+    expect(result.current.error).toBe('Internal server error');
+  });
 });
