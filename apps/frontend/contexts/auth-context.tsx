@@ -45,7 +45,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = async (userName: string, password: string) => {
-    throw new Error("Not implemented")
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+      const response = await fetch(`${baseURL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userName, password }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Login failed')
+      }
+
+      const { user: userData, token: userToken } = await response.json()
+      
+      setUser(userData)
+      setToken(userToken)
+      localStorage.setItem("token", userToken)
+      localStorage.setItem("user", JSON.stringify(userData))
+    } catch (err) {
+      setError('Login failed')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const logout = () => {
