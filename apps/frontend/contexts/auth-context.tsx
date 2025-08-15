@@ -57,7 +57,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
 
       if (!response.ok) {
-        throw new Error('Login failed')
+        const errorData = await response.text()
+        throw new Error(errorData || 'Login failed')
       }
 
       const { user: userData, token: userToken } = await response.json()
@@ -66,8 +67,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setToken(userToken)
       localStorage.setItem("token", userToken)
       localStorage.setItem("user", JSON.stringify(userData))
-    } catch (err) {
-      setError('Login failed')
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Login failed'
+      setError(message)
     } finally {
       setIsLoading(false)
     }
