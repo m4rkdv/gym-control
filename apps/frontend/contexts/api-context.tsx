@@ -1,7 +1,7 @@
 "use client";
 
 import React,{ createContext, useContext, ReactNode } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useAuth } from "./auth-context";
 
 interface ApiContextType {
@@ -26,6 +26,25 @@ export function ApiProvider({ children }: { children: ReactNode }) {
     }
     return config;
   });
+
+  api.interceptors.response.use(
+    (res) => res,
+    (error: AxiosError) => {
+      let message = "Something went wrong";
+
+      if (error.response?.data) {
+        const raw = error.response.data;
+        if (raw && typeof raw === "object") {
+          const possible = raw as { error?: string; message?: string };
+          message = possible.error ?? possible.message ?? message;
+        }
+      } else if (error.request) {
+        message = "Network error";
+      }
+
+      throw new Error(message);
+    }
+  );
 
   const get = async <T,>(endpoint: string): Promise<T> => {
     const res = await api.get<T>(endpoint);
