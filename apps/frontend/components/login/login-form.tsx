@@ -24,45 +24,20 @@ export function LoginForm({
   signUpHref = "#",
   ...props
 }: LoginFormProps) {
-  const router = useRouter();
-  const { login } = useAuth();
+  const router = useRouter()
+  const { login, isLoading, error } = useAuth()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError("")
-    setIsLoading(true)
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userName: email, password }),
-      })
-
-      const responseClone = response.clone();
-
-      try {
-        const data = await responseClone.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || `HTTP error! status: ${response.status}`);
-        }
-
-        login(data.user, data.token);
-
-        router.push("/dashboard")
-      } catch (jsonError) {
-        const textError = await response.text();
-        throw new Error(textError || `HTTP error! status: ${response.status}`);
-      }
-    } catch (err: any) {
-      setError(err.message || "An error occurred during login")
-    } finally {
-      setIsLoading(false)
+      await login(email, password)
+      router.push("/dashboard")
+    } catch (err) {
+      // Error is already handled by the auth context
+      console.error("Login failed:", err)
     }
   }
 
@@ -75,13 +50,7 @@ export function LoginForm({
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{(() => {
-                try {
-                  return JSON.parse(error).error;
-                } catch (e) {
-                  return error;
-                }
-              })()}</AlertDescription>
+              <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
