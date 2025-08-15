@@ -3,6 +3,8 @@ import { useApi, ApiProvider } from './api-context';
 import { AuthProvider } from './auth-context';
 import { describe, expect, test, vi } from 'vitest';
 import React, { ReactNode } from 'react';
+import { server } from '@/_test/setup';
+import { http, HttpResponse } from 'msw';
 
 function TestWrapper({ children }: { children: ReactNode }) {
   return (
@@ -31,5 +33,24 @@ describe('ApiContext', () => {
     });
 
     expect(response).toBeTruthy();
+  });
+});
+describe('Authorization header', () => {
+  test('includes Bearer token when token is available', async () => {
+    let capturedHeaders: Record<string, string> = {};
+    server.use(
+      http.get('*/api/users', ({ request }) => {
+        capturedHeaders = Object.fromEntries(request.headers.entries());
+        return HttpResponse.json([]);
+      })
+    );
+
+    const { result } = renderHook(() => useApi(), { wrapper: TestWrapper });
+
+    await act(async () => {
+      await result.current.get('/api/users');
+    });
+
+    expect(capturedHeaders.authorization).toBe('Bearer mock-jwt-token');
   });
 });
