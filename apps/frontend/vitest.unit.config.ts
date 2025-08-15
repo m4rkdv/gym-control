@@ -10,7 +10,7 @@ export default defineConfig({
   test: {
     name: 'unit',
     globals: true,
-    environment: 'node',
+  environment: 'jsdom',
     include: [
       '**/*.{test,spec}.?(c|m)[tj]s?(x)',
     ],
