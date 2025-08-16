@@ -33,11 +33,10 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 express
 
 COPY --from=builder --chown=express:nodejs /app/apps/backend/dist ./
-COPY --from=builder --chown=express:nodejs /app/apps/backend/node_modules ./node_modules
+COPY --from=builder --chown=express:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=express:nodejs /app/domain/dist ./domain
 
 ENV PORT=3100
-ENV MONGO_URL=mongodb://mongo-user:123456@mongo-db:27017/gymcontrol
 
 EXPOSE 3100
 
