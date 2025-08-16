@@ -39,6 +39,56 @@ gymControl/
 
 ---
 
+## 🚀 **Quick Start with Docker** (Recommended)
+
+### Prerequisites
+- [Docker](https://www.docker.com/get-started) and Docker Compose installed
+- [Git](https://git-scm.com/) to clone the repository
+
+### ⚡ Run the complete application (Single command)
+
+```bash
+# Clone the repository
+git clone https://github.com/m4rkdv/gym-control
+cd gymControl
+
+# Start all services (Frontend + Backend + Database)
+docker compose up -d
+```
+
+### 🌐 Access the application
+
+- **Frontend**: [http://localhost:3001](http://localhost:3001)
+- **API Backend**: [http://localhost:3001/api](http://localhost:3001/api)
+- **Health Check**: [http://localhost:3001/api/health](http://localhost:3001/api/health)
+
+### 👤 Test Users
+
+The system automatically initializes with test users:
+
+#### Administrator
+- **Username**: `admin`
+- **Password**: `123456`
+- **Permissions**: Full system access
+
+#### Trainers
+- **Username**: `trainer1` or `trainer2`
+- **Password**: `123456`
+- **Permissions**: Member and routine management
+
+#### Members
+- **Username**: `member1`, `member2`, etc.
+- **Password**: `123456`
+- **Permissions**: Access to personal information
+
+### 🐳 Included Docker services:
+- **🌐 Nginx**: Reverse proxy and static server
+- **⚛️ Frontend**: Next.js application with React
+- **🔧 Backend**: REST API with Express and Node.js
+- **🗄️ MongoDB**: NoSQL database with auto-seeded test data
+
+---
+
 ## 🔑 **Key Architectural Principles**
 
 | Principle | Description |
@@ -53,41 +103,39 @@ gymControl/
 
 ---
 
-## 🚀 **Getting Started**
+## �️ **Development Setup** (For Testing & Local Development)
 
 ### ✅ **Prerequisites**
 
 - **Node.js v18+**
-- **Docker & Docker Compose**
-- **Yarn v2+**
+- **Docker & Docker Compose** (for MongoDB)
+- **Yarn v1+**
 
-### 📦 **Installation**
+### 📦 **Installation & Setup**
 
 ```bash
 # Clone repository
-git clone https://github.com/your-username/gymControl.git
+git clone https://github.com/m4rkdv/gym-control.git
 cd gymControl
-```
 
-```bash
 # Install dependencies
 yarn install
-```
 
-```bash
 # Copy environment template
 cp apps/backend/.env.example apps/backend/.env
 ```
 
-### 🐳 **Running with Docker**
+### 🐳 **Start Database Only (for development)**
 
 ```bash
 # Start MongoDB container
-docker compose up -d
+docker compose up -d mongo
 ```
 
+### 🚀 **Run Development Server**
+
 ```bash
-# Start development server
+# Start backend development server
 yarn workspace @gymcontrol/backend dev
 ```
 
@@ -96,11 +144,15 @@ yarn workspace @gymcontrol/backend dev
 ```bash
 # Run all domain tests (TDD core)
 yarn workspace @gymcontrol/domain test
-```
 
-```bash
 # Run specific test suite
 yarn workspace @gymcontrol/domain vitest run tests/membership-status.test.ts
+
+# Run tests in watch mode
+yarn workspace @gymcontrol/domain test --watch
+
+# Run backend tests
+yarn workspace @gymcontrol/backend test
 ```
 
 ---
