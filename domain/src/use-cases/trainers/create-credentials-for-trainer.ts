@@ -1,8 +1,8 @@
-import { User, userRole } from "../../entities/User";
-import { createInvalidDataError, InvalidDataError } from "../../errors/error";
-import { TrainerRepository } from "../../repositories/trainer-repository";
-import { UserRepository } from "../../repositories/user-repository";
-import { generateTrainerUserName } from "../../utils/trainer-username";
+import { User, userRole } from "../../entities/User.js";
+import { createInvalidDataError, InvalidDataError } from "../../errors/error.js";
+import { TrainerRepository } from "../../repositories/trainer-repository.js";
+import { UserRepository } from "../../repositories/user-repository.js";
+import { generateTrainerUserName } from "../../utils/trainer-username.js";
 import bcrypt from 'bcrypt';
 
 

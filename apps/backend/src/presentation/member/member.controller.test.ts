@@ -6,8 +6,8 @@ import { mockUserRepository } from '../../../../../domain/src/mocks/user-reposit
 import { mockPaymentRepository } from '../../../../../domain/src/mocks/payment-repository-mock';
 
 import { Member, User } from '@gymcontrol/domain';
-import { AuthRequest } from '../auth/auth.middleware';
-import { MembersController } from './member.controller';
+import { AuthRequest } from '../auth/auth.middleware.js';
+import { MembersController } from './member.controller.js';
 import { mockSystemConfigRepository } from '../../../../../domain/src/mocks/system-config-mock';
 
 describe('MembersController', () => {

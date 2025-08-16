@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { JwtService } from '../services/jwt.service';
+import { JwtService } from '../services/jwt.service.js';
 
 
 export interface JwtPayload {

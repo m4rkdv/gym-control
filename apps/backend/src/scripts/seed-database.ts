@@ -1,11 +1,11 @@
 import bcrypt from 'bcryptjs';
-import { envs } from '../config/envs';
-import { MongoDatabase } from '../infrastructure/database/mongo/connection';
-import { MemberModel } from '../infrastructure/database/mongo/models/member.model';
-import { UserModel } from '../infrastructure/database/mongo/models/user.model';
-import { TrainerModel } from '../infrastructure/database/mongo/models/trainer.model';
-import { SystemConfigModel } from '../infrastructure/database/mongo/models/system-config.model';
-import { PaymentModel } from '../infrastructure/database/mongo/models/payment.model';
+import { envs } from '../config/envs.js';
+import { MongoDatabase } from '../infrastructure/database/mongo/connection.js';
+import { MemberModel } from '../infrastructure/database/mongo/models/member.model.js';
+import { UserModel } from '../infrastructure/database/mongo/models/user.model.js';
+import { TrainerModel } from '../infrastructure/database/mongo/models/trainer.model.js';
+import { SystemConfigModel } from '../infrastructure/database/mongo/models/system-config.model.js';
+import { PaymentModel } from '../infrastructure/database/mongo/models/payment.model.js';
 
 async function seedDatabase() {
   try {

@@ -1,5 +1,5 @@
-import { Member } from "../../entities/Member";
-import { Payment } from "../../entities/Payment";
+import { Member } from "../../entities/Member.js";
+import { Payment } from "../../entities/Payment.js";
 
 /**
  * Updates the membership status and paidUntil date of a member based on a new payment.

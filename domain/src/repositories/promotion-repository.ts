@@ -1,4 +1,4 @@
-import { Promotion } from "../entities/Promotion";
+import { Promotion } from "../entities/Promotion.js";
 
 export interface PromotionRepository {
   findActiveByMinimumMonths(months: number): Promise<Promotion[]>;

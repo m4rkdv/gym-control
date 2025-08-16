@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { AuthRequest } from "../auth/auth.middleware";
+import { AuthRequest } from "../auth/auth.middleware.js";
 import { MemberRepository, UserRepository, PaymentRepository, SystemConfigRepository, ProcessPayment, VerifyMembershipStatus } from '@gymcontrol/domain';
 
 export class MembersController {

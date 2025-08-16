@@ -6,7 +6,7 @@ import { mockMemberRepository } from '../../../../../domain/src/mocks/member-rep
 import { JwtService } from '../services/jwt.service';
 import { Member, User } from '@gymcontrol/domain';
 import * as bcrypt from 'bcrypt';
-import { AuthController } from './auth.controller';
+import { AuthController } from './auth.controller.js';
 
 // Mock JwtService
 vi.mock('../services/jwt.service', () => ({

@@ -1,7 +1,7 @@
-import { Member } from "../../entities/Member";
-import { createInvalidDataError, InvalidDataError } from "../../errors/error";
-import { MemberRepository } from "../../repositories/member-repository";
-import { UserRepository } from "../../repositories/user-repository";
+import { Member } from "../../entities/Member.js";
+import { createInvalidDataError, InvalidDataError } from "../../errors/error.js";
+import { MemberRepository } from "../../repositories/member-repository.js";
+import { UserRepository } from "../../repositories/user-repository.js";
 
 export interface ChangeMemberStatusDependencies {
   members: MemberRepository;

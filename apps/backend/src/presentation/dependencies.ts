@@ -1,8 +1,8 @@
 import { MemberRepository, UserRepository, PaymentRepository, SystemConfigRepository } from '@gymcontrol/domain';
-import { MongoMemberRepository } from 'src/infrastructure/repositories/member.repository.impl';
-import { MongoUserRepository } from 'src/infrastructure/repositories/user.repository.impl';
-import { MongoPaymentRepository } from 'src/infrastructure/repositories/payment.repository.impl';
-import { MongoSystemConfigRepository } from 'src/infrastructure/repositories/system-config.impl';
+import { MongoMemberRepository } from '../infrastructure/repositories/member.repository.impl.js';
+import { MongoUserRepository } from '../infrastructure/repositories/user.repository.impl.js';
+import { MongoPaymentRepository } from '../infrastructure/repositories/payment.repository.impl.js';
+import { MongoSystemConfigRepository } from '../infrastructure/repositories/system-config.impl.js';
 
 export interface Dependencies {
   memberRepository: MemberRepository;
