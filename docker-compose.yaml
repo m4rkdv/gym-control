@@ -48,6 +48,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.frontend
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:3001
     container_name: gymcontrol-frontend
     restart: unless-stopped
     environment:
