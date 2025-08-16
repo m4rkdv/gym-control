@@ -36,6 +36,10 @@ COPY --from=builder --chown=express:nodejs /app/apps/backend/dist ./
 COPY --from=builder --chown=express:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=express:nodejs /app/domain/dist ./domain
 
+# Copiar script de inicio
+COPY --from=builder --chown=express:nodejs /app/apps/backend/start.sh ./start.sh
+RUN chmod +x ./start.sh
+
 ENV PORT=3100
 
 EXPOSE 3100
@@ -46,4 +50,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 
 USER express
 
-CMD ["node", "app.js"]
+CMD ["./start.sh"]
