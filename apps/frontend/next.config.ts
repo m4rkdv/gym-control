@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
   // Configurar rutas para el monorepo
   transpilePackages: ['@gymcontrol/domain'],
 
+  // Skip ESLint during build for Docker
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
 };
 
 export default nextConfig;
