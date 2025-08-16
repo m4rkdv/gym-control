@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { AuthRoutes } from "./auth/routes";
-import { Dependencies } from "./dependencies";
-import { MembersRoutes } from "./member/routes";
-import { HealthRoutes } from "./health/routes";
+import { AuthRoutes } from "./auth/routes.js";
+import { Dependencies } from "./dependencies.js";
+import { MembersRoutes } from "./member/routes.js";
+import { HealthRoutes } from "./health/routes.js";
 
 export class AppRoutes {
     constructor(private readonly dependencies: Dependencies) { }

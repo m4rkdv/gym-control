@@ -1,10 +1,10 @@
-import { ValidatePayment } from "./validate-payment";
-import { UpdateMembership } from "./update-membership";
-import { PaymentRepository } from "../../repositories/payment-repository";
-import { MemberRepository } from "../../repositories/member-repository";
-import { CreatePaymentDTO, Payment } from "../../entities/Payment";
-import { InvalidDataError } from "../../errors/error";
-import { Member } from "../../entities/Member";
+import { ValidatePayment } from "./validate-payment.js";
+import { UpdateMembership } from "./update-membership.js";
+import { PaymentRepository } from "../../repositories/payment-repository.js";
+import { MemberRepository } from "../../repositories/member-repository.js";
+import { CreatePaymentDTO, Payment } from "../../entities/Payment.js";
+import { InvalidDataError } from "../../errors/error.js";
+import { Member } from "../../entities/Member.js";
 
 export interface ProcessPaymentDependencies {
   payments: PaymentRepository;

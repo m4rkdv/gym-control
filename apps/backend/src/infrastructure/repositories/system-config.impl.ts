@@ -1,5 +1,5 @@
 import { SystemConfig, SystemConfigRepository } from '@gymcontrol/domain';
-import { SystemConfigModel } from '../database/mongo/models/system-config.model';
+import { SystemConfigModel } from '../database/mongo/models/system-config.model.js';
 
 export class MongoSystemConfigRepository implements SystemConfigRepository {
     async getCurrent(): Promise<SystemConfig> {

@@ -1,5 +1,5 @@
 import { Payment, PaymentRepository } from '@gymcontrol/domain';
-import { PaymentModel } from '../database/mongo/models/payment.model';
+import { PaymentModel } from '../database/mongo/models/payment.model.js';
 
 export class MongoPaymentRepository implements PaymentRepository {
   async save(payment: Omit<Payment, 'id'>): Promise<Payment> {

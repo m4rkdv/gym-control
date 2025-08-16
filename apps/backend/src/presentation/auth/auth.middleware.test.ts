@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
-import { JwtService } from '../services/jwt.service';
+import { JwtService } from '../services/jwt.service.js';
 import { NextFunction, Response } from 'express';
-import { authenticateToken, AuthRequest, JwtPayload } from './auth.middleware';
+import { authenticateToken, AuthRequest, JwtPayload } from './auth.middleware.js';
 
 vi.mock('../services/jwt.service', () => ({
     JwtService: {

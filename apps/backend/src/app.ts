@@ -1,8 +1,8 @@
-import { envs } from "./config";
-import { AppRoutes } from "./presentation/routes";
-import { Server } from "./presentation/server";
-import { MongoDatabase } from './infrastructure/database/mongo/connection';
-import { createDependencies } from "./presentation/dependencies";
+import { envs } from "./config/index.js";
+import { AppRoutes } from "./presentation/routes.js";
+import { Server } from "./presentation/server.js";
+import { MongoDatabase } from './infrastructure/database/mongo/connection.js';
+import { createDependencies } from "./presentation/dependencies.js";
 
 (async () => {
     await main();

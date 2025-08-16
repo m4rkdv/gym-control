@@ -1,6 +1,6 @@
-import { LoginDTO, User } from "../../entities/User";
-import { createInvalidDataError, InvalidDataError } from "../../errors/error";
-import { UserRepository } from "../../repositories/user-repository";
+import { LoginDTO, User } from "../../entities/User.js";
+import { createInvalidDataError, InvalidDataError } from "../../errors/error.js";
+import { UserRepository } from "../../repositories/user-repository.js";
 import bcrypt from 'bcrypt';
 
 export interface AuthenticateUserDependencies {

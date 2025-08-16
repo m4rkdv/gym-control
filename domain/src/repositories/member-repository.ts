@@ -1,4 +1,4 @@
-import { CreateMemberDTO, Member, UpdateMemberDTO } from "../entities/Member";
+import { CreateMemberDTO, Member, UpdateMemberDTO } from "../entities/Member.js";
 
 export interface MemberRepository {
   create(member: CreateMemberDTO): Promise<Member>;

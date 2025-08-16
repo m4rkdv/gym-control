@@ -1,7 +1,7 @@
-import { CreatePaymentDTO } from "../../entities/Payment";
-import { createInvalidDataError, InvalidDataError } from "../../errors/error";
-import { MemberRepository } from "../../repositories/member-repository";
-import { PaymentRepository } from "../../repositories/payment-repository";
+import { CreatePaymentDTO } from "../../entities/Payment.js";
+import { createInvalidDataError, InvalidDataError } from "../../errors/error.js";
+import { MemberRepository } from "../../repositories/member-repository.js";
+import { PaymentRepository } from "../../repositories/payment-repository.js";
 
 /**
  * Validates a payment request against business rules and member status

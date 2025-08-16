@@ -1,4 +1,4 @@
-import { Trainer } from "../entities/Trainer";
+import { Trainer } from "../entities/Trainer.js";
 
 export interface TrainerRepository {
   save(trainer: Trainer): Promise<Trainer>;

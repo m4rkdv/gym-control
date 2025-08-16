@@ -1,8 +1,8 @@
-import { Member } from "../../entities/Member";
-import { SystemConfig } from "../../entities/SystemConfig";
-import { createInvalidDataError, InvalidDataError } from "../../errors/error";
-import { MemberRepository } from "../../repositories/member-repository";
-import { SystemConfigRepository } from "../../repositories/system-config-repository";
+import { Member } from "../../entities/Member.js";
+import { SystemConfig } from "../../entities/SystemConfig.js";
+import { createInvalidDataError, InvalidDataError } from "../../errors/error.js";
+import { MemberRepository } from "../../repositories/member-repository.js";
+import { SystemConfigRepository } from "../../repositories/system-config-repository.js";
 
 export interface VerifyMembershipStatusDependencies {
     members: MemberRepository;

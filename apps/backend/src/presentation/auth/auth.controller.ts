@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { JwtService } from "../services/jwt.service";
+import { JwtService } from "../services/jwt.service.js";
 import { RegisterMember, CreateCredentialsForMember, AuthenticateUser, UserRepository, MemberRepository } from '@gymcontrol/domain';
 
 

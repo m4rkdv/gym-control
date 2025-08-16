@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { authenticateToken } from '../auth/auth.middleware';
+import { authenticateToken } from '../auth/auth.middleware.js';
 import { MemberRepository, UserRepository, PaymentRepository, SystemConfigRepository } from '@gymcontrol/domain';
-import { MembersController } from './member.controller';
+import { MembersController } from './member.controller.js';
 
 export class MembersRoutes {
   constructor(

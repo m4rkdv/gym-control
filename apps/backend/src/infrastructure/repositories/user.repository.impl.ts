@@ -1,5 +1,5 @@
 import { User, UserRepository } from '@gymcontrol/domain';
-import { UserModel } from '../database/mongo/models/user.model';
+import { UserModel } from '../database/mongo/models/user.model.js';
 
 
 export class MongoUserRepository implements UserRepository {

@@ -1,7 +1,7 @@
-import { CreateMemberDTO, Member } from "../../entities/Member";
-import { createInvalidDataError, InvalidDataError } from "../../errors/error";
-import { MemberRepository } from "../../repositories/member-repository";
-import { INITIAL_PAID_UNTIL } from "../../utils/date";
+import { CreateMemberDTO, Member } from "../../entities/Member.js";
+import { createInvalidDataError, InvalidDataError } from "../../errors/error.js";
+import { MemberRepository } from "../../repositories/member-repository.js";
+import { INITIAL_PAID_UNTIL } from "../../utils/date.js";
 
 
 export interface RegisterMemberDependencies {
