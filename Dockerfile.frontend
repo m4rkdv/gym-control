@@ -1,0 +1,58 @@
+
+FROM node:lts-alpine AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+
+COPY package.json yarn.lock ./
+COPY domain/package.json ./domain/package.json
+COPY apps/frontend/package.json ./apps/frontend/package.json
+
+
+RUN yarn install --frozen-lockfile
+
+
+FROM node:lts-alpine AS builder
+WORKDIR /app
+
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/domain/node_modules ./domain/node_modules
+COPY --from=deps /app/apps/frontend/node_modules ./apps/frontend/node_modules
+
+COPY package.json yarn.lock ./
+COPY tsconfig.json ./
+COPY domain/ ./domain/
+COPY apps/frontend/ ./apps/frontend/
+
+
+RUN yarn workspace @gymcontrol/domain build
+
+
+RUN yarn workspace @gymcontrol/frontend build
+
+
+FROM node:lts-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV PORT=3000
+
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+
+COPY --from=builder /app/apps/frontend/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next/static ./.next/static
+
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1
+
+USER nextjs
+
+CMD ["node", "server.js"]

@@ -2,6 +2,7 @@ import { Router } from "express";
 import { AuthRoutes } from "./auth/routes";
 import { Dependencies } from "./dependencies";
 import { MembersRoutes } from "./member/routes";
+import { HealthRoutes } from "./health/routes";
 
 export class AppRoutes {
     constructor(private readonly dependencies: Dependencies) { }
@@ -15,6 +16,11 @@ export class AppRoutes {
             paymentRepository: this.dependencies.paymentRepository,
             systemConfigRepository: this.dependencies.systemConfigRepository
         });
+
+        const healthRouter = new HealthRoutes();
+
+        // Health check 
+        appRouter.use('/api', healthRouter.routes);
 
         appRouter.use('/api/auth', authRouter.routes);
         appRouter.use('/api/members', membersRouter.routes);
