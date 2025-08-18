@@ -235,10 +235,9 @@ describe('ChangeMemberStatus Use Case', () => {
 
     expect(result.membershipStatus).toBe('inactive');
     expect(updateSpy).toHaveBeenCalledTimes(1);
-    expect(updateSpy).toHaveBeenCalledWith(expect.objectContaining({
-      id: 'member-1',
+    expect(updateSpy).toHaveBeenCalledWith('member-1', {
       membershipStatus: 'inactive'
-    }));
+    });
   });
 
   test('AdminRole_ChangingStatusToSuspended_UpdatesStatus', async () => {
