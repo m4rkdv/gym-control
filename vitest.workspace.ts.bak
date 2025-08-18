@@ -1,0 +1,25 @@
+import { defineWorkspace } from 'vitest/config';
+
+export default defineWorkspace([
+  {
+    test: {
+      name: 'domain',
+      root: './domain',
+      environment: 'node',
+    },
+  },
+  {
+    test: {
+      name: 'backend',
+      root: './apps/backend',
+      environment: 'node',
+    },
+  },
+  {
+    test: {
+      name: 'frontend',
+      root: './apps/frontend',
+      environment: 'jsdom',
+    },
+  },
+]);
